@@ -1628,6 +1628,7 @@ public class Controller_Update {
                     }
 
 
+
                     Dao_Update dao_config = new Dao_Update(0,3);
                     for (int i = 0; i < bean_version_configs_carList.size(); i++) {
                         String version_exits_id = bean_version_configs_carList.get(i).getC_version_id();
