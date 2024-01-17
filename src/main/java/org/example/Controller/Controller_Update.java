@@ -1620,15 +1620,10 @@ public class Controller_Update {
                                             break;
                                         }
                                     }
-
-
                                 }
                             }
                         }
                     }
-
-
-
                     Dao_Update dao_config = new Dao_Update(0,3);
                     for (int i = 0; i < bean_version_configs_carList.size(); i++) {
                         String version_exits_id = bean_version_configs_carList.get(i).getC_version_id();
@@ -1636,8 +1631,20 @@ public class Controller_Update {
                            Object obj = dao_config.Method_Find_oneBean("C_version_id", version_exits_id);
                            if (obj.toString().equals(bean_version_configs_carList.get(i).toString().replace("null", "-"))){
                                System.out.println("普通更新\t"+version_exits_id);
+                               SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+                               String time = df.format(new Date());
+                               bean_version_configs_carList.get(i).setC_备注(time+"普通更新");
+                               bean_version_configs_carList.get(i).setC_备注时间(time);
+                               dao_config.Method_Update(bean_version_configs_carList.get(i),"C_version_id",version_exits_id);
+
                            }else {
                                System.out.println("特殊更新\t"+version_exits_id);
+                               SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+                               String time = df.format(new Date());
+//                               String earth = ((Bean_version_config)obj).getC_备注();
+                               bean_version_configs_carList.get(i).setC_备注(time+"特殊更新");
+                               bean_version_configs_carList.get(i).setC_备注时间(time);
+                               dao_config.Method_Update(bean_version_configs_carList.get(i),"C_version_id",version_exits_id);
                            }
 
                        }else {
