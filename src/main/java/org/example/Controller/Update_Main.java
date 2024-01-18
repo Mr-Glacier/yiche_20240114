@@ -55,10 +55,11 @@ public class Update_Main {
         String ConfigAPI = "https://mhapi.yiche.com/hcar/h_car/api/v1/param/get_param_details?";
         String Config_fileName = "_Config.txt";
 
-//        7.下载版本配置信息
-        CU.Method_7_Down_Config(Config_savePath, ConfigAPI, Config_fileName);
+//        7.下载版本配置信息  5:50
+//        CU.Method_7_Down_Config(Config_savePath, ConfigAPI, Config_fileName);
 
 //        8.更新版本配置信息
-//        CU.Method_8_Analysis_Config(Config_savePath,Config_fileName);
+//        更新版本配置数据需要 2H
+        CU.Method_8_Analysis_Config(Config_savePath,Config_fileName);
     }
 }

@@ -2,97 +2,81 @@ package org.example.Entity;
 
 public class Bean_model {
     private int C_ID;
-    private String C_备注;
-    private String C_备注时间;
+    private String C_备注="空";
+    private String C_备注时间="空";
 
-    public String getC_备注() {
-        return C_备注;
-    }
-
-    public void setC_备注(String c_备注) {
-        C_备注 = c_备注;
-    }
-
-    public String getC_备注时间() {
-        return C_备注时间;
-    }
-
-    public void setC_备注时间(String c_备注时间) {
-        C_备注时间 = c_备注时间;
-    }
-
-    private String C_factory_id;
-    private String C_factory_name;
-    private String C_advertFlag;
-    private String C_advertInfo;
-    private String C_model_id;
-    private String C_name;
-    private String C_subsidizedReferPrice;
-    private String C_referPrice;
-    private String C_allSpell;
-    private String C_usedCarPrice;
-    private String C_desc;
-    private String C_localDealPrice;
-    private String C_minDealPriceCarId;
-    private String C_minDealPriceCarStatus;
-    private String C_entireDealPrice;
-    private String C_cityReferencePrice;
-    private String C_subscribeStatus;
-    private String C_dropPrice;
-    private String C_maintainValue;
-    private String C_saleStatus;
-    private String C_isNewEnergy;
-    private String C_brandId;
-    private String C_brandName;
-    private String C_serialFirstLevel;
-    private String C_serialSecondLevel;
-    private String C_exteriorPhotoVo;
-    private String C_frontRowPhotoVo;
-    private String C_backRowPhotoVo;
-    private String C_officialPhotoVo;
-    private String C_autoShowPhotoVo;
-    private String C_officialPhotoVoList;
-    private String C_autoShowPhotoVoList;
-    private String C_photoCount;
-    private String C_pictureType;
-    private String C_photoId;
-    private String C_videoInfo;
-    private String C_loanVo;
-    private String C_forumSpell;
-    private String C_forumId;
-    private String C_newEnergyCarList;
-    private String C_businessCardList;
-    private String C_carNum;
-    private String C_carIdList;
-    private String C_modelTagsStatic;
-    private String C_imageUrl;
-    private String C_imageUrlWp;
-    private String C_carMarket;
-    private String C_electricRechargeMileage;
-    private String C_mouthDay;
-    private String C_yiCheHuiTag;
-    private String C_masterId;
-    private String C_masterName;
-    private String C_masterAllSpell;
-    private String C_logoUrl;
-    private String C_logoUrlWp;
-    private String C_yiCheHuiFlashSale;
-    private String C_clueControlType;
-    private String C_filterMasterType;
-    private String C_marketDate;
-    private String C_vrPhotoCarId;
-    private String C_vrAlbumId;
-    private String C_wxWorkChatFlag;
-    private String C_tag;
-    private String C_labels;
-    private String C_modelTagsDynamicLinkeds;
-    private String C_vrInfo;
-    private String C_evaluationInfo;
-    private String C_rankInfo;
-    private String C_dealFinalPrice;
-    private String C_videoInstructionCount;
-    private String C_DownState;
-    private String C_DownTime;
+    private String C_factory_id="空";
+    private String C_factory_name="空";
+    private String C_advertFlag="空";
+    private String C_advertInfo="空";
+    private String C_model_id="空";
+    private String C_name="空";
+    private String C_subsidizedReferPrice="空";
+    private String C_referPrice="空";
+    private String C_allSpell="空";
+    private String C_usedCarPrice="空";
+    private String C_desc="空";
+    private String C_localDealPrice="空";
+    private String C_minDealPriceCarId="空";
+    private String C_minDealPriceCarStatus="空";
+    private String C_entireDealPrice="空";
+    private String C_cityReferencePrice="空";
+    private String C_subscribeStatus="空";
+    private String C_dropPrice="空";
+    private String C_maintainValue="空";
+    private String C_saleStatus="空";
+    private String C_isNewEnergy="空";
+    private String C_brandId="空";
+    private String C_brandName="空";
+    private String C_serialFirstLevel="空";
+    private String C_serialSecondLevel="空";
+    private String C_exteriorPhotoVo="空";
+    private String C_frontRowPhotoVo="空";
+    private String C_backRowPhotoVo="空";
+    private String C_officialPhotoVo="空";
+    private String C_autoShowPhotoVo="空";
+    private String C_officialPhotoVoList="空";
+    private String C_autoShowPhotoVoList="空";
+    private String C_photoCount="空";
+    private String C_pictureType="空";
+    private String C_photoId="空";
+    private String C_videoInfo="空";
+    private String C_loanVo="空";
+    private String C_forumSpell="空";
+    private String C_forumId="空";
+    private String C_newEnergyCarList="空";
+    private String C_businessCardList="空";
+    private String C_carNum="空";
+    private String C_carIdList="空";
+    private String C_modelTagsStatic="空";
+    private String C_imageUrl="空";
+    private String C_imageUrlWp="空";
+    private String C_carMarket="空";
+    private String C_electricRechargeMileage="空";
+    private String C_mouthDay="空";
+    private String C_yiCheHuiTag="空";
+    private String C_masterId="空";
+    private String C_masterName="空";
+    private String C_masterAllSpell="空";
+    private String C_logoUrl="空";
+    private String C_logoUrlWp="空";
+    private String C_yiCheHuiFlashSale="空";
+    private String C_clueControlType="空";
+    private String C_filterMasterType="空";
+    private String C_marketDate="空";
+    private String C_vrPhotoCarId="空";
+    private String C_vrAlbumId="空";
+    private String C_wxWorkChatFlag="空";
+    private String C_tag="空";
+    private String C_labels="空";
+    private String C_modelTagsDynamicLinkeds="空";
+    private String C_vrInfo="空";
+    private String C_evaluationInfo="空";
+    private String C_rankInfo="空";
+    private String C_dealFinalPrice="空";
+    private String C_videoInstructionCount="空";
+    private String C_DownState="空";
+    private String C_DownTime="空";
 
     public int getC_ID() {
         return C_ID;
@@ -111,11 +95,11 @@ public class Bean_model {
     }
 
     public String getC_factory_name() {
-        return C_factory_name;
+        return C_factory_name.replace(" ", "");
     }
 
     public void setC_factory_name(String c_factory_name) {
-        C_factory_name = c_factory_name;
+        C_factory_name = c_factory_name.replace(" ", "");
     }
 
     public String getC_advertFlag() {
@@ -135,19 +119,19 @@ public class Bean_model {
     }
 
     public String getC_model_id() {
-        return C_model_id;
+        return C_model_id.replace(" ", "");
     }
 
     public void setC_model_id(String c_model_id) {
-        C_model_id = c_model_id;
+        C_model_id = c_model_id.replace(" ", "");
     }
 
     public String getC_name() {
-        return C_name;
+        return C_name.replace(" ", "");
     }
 
     public void setC_name(String c_name) {
-        C_name = c_name;
+        C_name = c_name.replace(" ", "");
     }
 
     public String getC_subsidizedReferPrice() {
@@ -676,6 +660,22 @@ public class Bean_model {
 
     public void setC_DownTime(String c_DownTime) {
         C_DownTime = c_DownTime;
+    }
+
+    public String getC_备注() {
+        return C_备注;
+    }
+
+    public void setC_备注(String c_备注) {
+        C_备注 = c_备注;
+    }
+
+    public String getC_备注时间() {
+        return C_备注时间;
+    }
+
+    public void setC_备注时间(String c_备注时间) {
+        C_备注时间 = c_备注时间;
     }
 
     @Override

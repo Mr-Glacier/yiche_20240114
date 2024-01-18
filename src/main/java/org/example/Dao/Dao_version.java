@@ -64,6 +64,7 @@ public class Dao_version extends DaoFather {
         String time = df.format(new Date());
         String sql1 = "update " + this.TableName + " set C_DownTime = '" + time + "'  where GroupNumber = " + Group;
         Method_IUD(sql1);
+
     }
 
 

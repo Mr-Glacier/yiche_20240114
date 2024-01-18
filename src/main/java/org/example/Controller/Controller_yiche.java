@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.example.Dao.DaoFather;
 import org.example.Dao.Dao_version;
-import org.example.Entity.Bean_brand;
-import org.example.Entity.Bean_model;
-import org.example.Entity.Bean_version;
-import org.example.Entity.Bean_version_config;
+import org.example.Entity.*;
 import org.example.Until.MD5Until;
 import org.example.Until.ReadUntil;
 import org.example.Until.SaveUntil;
@@ -89,6 +86,7 @@ public class Controller_yiche {
             Document document = Jsoup.parse(new URL(main_url).openStream(), "UTF-8", main_url);
 //            System.out.println(document);
             saveUntil.Method_SaveFile(savePath + fileName, document.toString());
+            System.out.println("Method_1------>下载完成");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,9 +125,12 @@ public class Controller_yiche {
                 bean_brand.setC_letter(Brand_letter);
                 bean_brand.setC_DownState("否");
                 bean_brand.setC_DownTime("--");
+                bean_brand.setC_备注("");
+                bean_brand.setC_备注时间("");
                 dao_brand.Method_Insert(bean_brand);
             }
         }
+        System.out.println("Method_2 ---->品牌完成入库");
     }
 
     public void Method_3_Down_FactoryANDModel(String savePath, String main_url, String fileName) {
@@ -146,9 +147,9 @@ public class Controller_yiche {
                 String param = "{\"masterId\":\"" + brand_id + "\"}";
                 String connect = Method_RequestAPI(main_url, param);
                 if (!connect.equals("Error")) {
-                    saveUntil.Method_SaveFile(savePath + brand_id + fileName, connect);
                     String status = JSON.parseObject(connect).getString("status");
                     if (status.equals("1")) {
+                        saveUntil.Method_SaveFile(savePath + brand_id + fileName, connect);
                         dao_brand.Method_ChangeState(C_ID);
                         System.out.println(C_ID);
                     }
@@ -349,16 +350,18 @@ public class Controller_yiche {
                 String content = Method_RequestAPI(main_url, param);
                 if (!content.equals("Error")) {
                     System.out.println(C_ID);
-                    System.out.println(content);
+//                    System.out.println(content);
                     String status = JSON.parseObject(content).getString("status");
                     if (status.equals("15501")) {
-                        saveUntil.Method_SaveFile_True("F:\\ZKZD\\Java项目\\yiche_20240114\\src\\main\\java\\org\\example\\1.txt", model_id + "\n");
+                       saveUntil.Method_SaveFile(savePath +"Error_"+ model_id + fileName, content);
                         dao_model.Method_ChangeState2(C_ID);
                     }
                     if (status.equals("1")) {
                         saveUntil.Method_SaveFile(savePath + model_id + fileName, content);
                         dao_model.Method_ChangeState(C_ID);
                         System.out.println("成功保存数据 :"+C_ID);
+                    }else {
+                        System.out.println(content);
                     }
                 }
             }
@@ -982,8 +985,44 @@ public class Controller_yiche {
             String connect = readUntil.Method_ReadFile(savePath + i + fileName);
             System.out.println(i+fileName);
             Method_Analysis_baseConfig(connect, i + fileName);
+//            Method_9_Analysis_Config_2_GetCoumns(connect);
         }
     }
+
+    public void Method_9_Analysis_Config_2_GetCoumns(String content){
+        DaoFather dao_configcolumn = new DaoFather(0, 3);
+        JSONObject jsonObject = JSON.parseObject(content).getJSONObject("data");
+        JSONArray Items = jsonObject.getJSONArray("list");
+        boolean b = (Items == null);
+        if (!b){
+            if (Items.size()!=0){
+                for (int i = 0; i < Items.size(); i++) {
+                    JSONObject Item_One_Title = Items.getJSONObject(i);
+
+//            一级标题
+                    String title_1 = Item_One_Title.getString("name");
+
+
+                    JSONArray Items2 = Item_One_Title.getJSONArray("items");
+
+                    for (int j = 0; j < Items2.size(); j++) {
+                        JSONObject Item_Two_Title = Items2.getJSONObject(j);
+                        String title_2 = title_1+"_"+Item_Two_Title.getString("name");
+//                        System.out.println(title_2);
+
+                        Bean_configcolumn bean_configcolumn = new Bean_configcolumn();
+                        bean_configcolumn.setC_column_one(title_1);
+                        bean_configcolumn.setC_column_two(title_2);
+                    dao_configcolumn.Method_Insert(bean_configcolumn);
+
+                    }
+                }
+            }else {
+//            saveUntil.Method_SaveFile_True("E:\\ZKZD2023\\易车网\\Erroe.txt", file+"\t");
+            }
+        }
+    }
+
 
     public static void Method_Analysis_baseConfig(String contentJSON, String filename) {
 
@@ -1465,15 +1504,11 @@ public class Controller_yiche {
                                             break;
                                         }
                                     }
-
-
                                 }
                             }
                         }
                     }
-
-
-                    DaoFather dao_config = new DaoFather(0, 3);
+                    DaoFather dao_config = new DaoFather(0, 4);
                     for (int i = 0; i < bean_version_configs_carList.size(); i++) {
                         dao_config.MethodInsert(bean_version_configs_carList.get(i));
                     }

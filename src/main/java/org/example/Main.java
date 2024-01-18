@@ -1,15 +1,22 @@
 package org.example;
 
 import org.example.Controller.Controller_yiche;
+import org.example.Until.HelpCreateFile;
 
 public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
-
-
         Controller_yiche CY = new Controller_yiche();
 
-        String brand_savePath = "E:\\ZKZD2024\\易车网\\20240114\\brand\\";
+        String mainPath = "E:\\ZKZD2024\\易车网\\";
+        String datePath = mainPath + "20240116\\";
+        HelpCreateFile.Method_Creat_folder(datePath);
+
+
+
+
+        String brand_savePath = datePath+"brand\\";
+        HelpCreateFile.Method_Creat_folder(brand_savePath);
         String brand_url= "https://car.yiche.com/";
         String brand_fileName = "brand_html.txt";
 //        下载品牌页面
@@ -19,7 +26,8 @@ public class Main {
 //        CY.Method_2_Analysis_Yiche_Brand(brand_savePath, brand_fileName);
 
 
-        String model_savePath = "E:\\ZKZD2024\\易车网\\20240114\\model\\";
+        String model_savePath = datePath+"model\\";
+        HelpCreateFile.Method_Creat_folder(model_savePath);
         String model_API = "https://mapi.yiche.com/web_api/car_model_api/api/v1/brand/get_brand_list?";
         String modelfileName = "_models.txt";
 
@@ -32,10 +40,11 @@ public class Main {
 
 
         String versionListAPI = "https://mapi.yiche.com/web_api/car_model_api/api/v1/car/car_list_condition?";
-        String version_savePath ="E:\\ZKZD2024\\易车网\\20240114\\version\\";
+        String version_savePath =datePath+"\\version\\";
+        HelpCreateFile.Method_Creat_folder(version_savePath);
         String version_fileName = "_version.txt";
 
-//        5.下载版本数据
+//        5.下载版本数据  1.5 H
 //        for (int i = 0; i < 5; i++) {
 //            CY.Method_5_Down_version(version_savePath, versionListAPI, version_fileName);
 //        }
@@ -44,7 +53,8 @@ public class Main {
 //        CY.Method_6_Analysis_version(version_savePath, version_fileName);
 
 
-        String Config_savePath ="E:\\ZKZD2024\\易车网\\20240114\\Config\\";
+        String Config_savePath =datePath+"Config\\";
+        HelpCreateFile.Method_Creat_folder(Config_savePath);
         String Config_fileName = "_Config.txt";
         String ConfigAPI= "https://mhapi.yiche.com/hcar/h_car/api/v1/param/get_param_details?";
 
