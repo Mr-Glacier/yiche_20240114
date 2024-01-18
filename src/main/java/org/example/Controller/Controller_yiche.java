@@ -984,12 +984,13 @@ public class Controller_yiche {
         for (int i = 1; i <= All_GroupNumber; i++) {
             String connect = readUntil.Method_ReadFile(savePath + i + fileName);
             System.out.println(i+fileName);
-            Method_Analysis_baseConfig(connect, i + fileName);
-//            Method_9_Analysis_Config_2_GetCoumns(connect);
+//            Method_Analysis_baseConfig(connect, i + fileName);
+//            Method_9_Analysis_Config_GetCoumns(connect);
+            Method_Analysis_choseConfig(connect, i + fileName);
         }
     }
 
-    public void Method_9_Analysis_Config_2_GetCoumns(String content){
+    public void Method_9_Analysis_Config_GetCoumns(String content){
         DaoFather dao_configcolumn = new DaoFather(0, 3);
         JSONObject jsonObject = JSON.parseObject(content).getJSONObject("data");
         JSONArray Items = jsonObject.getJSONArray("list");
@@ -1519,6 +1520,65 @@ public class Controller_yiche {
             e.printStackTrace();
         }
 
+    }
+
+
+    public static void Method_Analysis_choseConfig(String contentJSON,String filename){
+        DaoFather dao_choseConfig = new DaoFather(0, 5);
+        try {
+            JSONObject Item_data = JSON.parseObject(contentJSON).getJSONObject("data");
+
+            JSONArray Item_list = Item_data.getJSONArray("list");
+
+            if (null != Item_list) {
+                if (Item_list.size() > 0) {
+
+                    for (int i = 0; i < Item_list.size(); i++) {
+                        JSONObject title_one_Object = Item_list.getJSONObject(i);
+                        String title_one = title_one_Object.getString("name");
+                        JSONArray title_one_Items = title_one_Object.getJSONArray("items");
+                        if (title_one.equals("选配包")||title_one.equals("特色配置")) {
+                            for (int j = 0; j < title_one_Items.size(); j++) {
+                                JSONObject title_two_Object = title_one_Items.getJSONObject(j);
+                                String title_two = title_two_Object.getString("name");
+                                String columnName = title_one + "_" + title_two;
+                                String desc_main = title_two_Object.getString("desc");
+                                JSONArray paramValues = title_two_Object.getJSONArray("paramValues");
+                                for (int k = 0; k < paramValues.size(); k++) {
+                                    JSONObject one_car = paramValues.getJSONObject(k);
+                                    String version_id = one_car.getString("id");
+                                    JSONArray subList = one_car.getJSONArray("subList");
+                                    for (int l = 0; l < subList.size(); l++) {
+                                        JSONObject one_date_value = subList.getJSONObject(l);
+                                        String one_value = one_date_value.getString("value");
+                                        String price = "为空";
+                                        String desc = "为空";
+                                        if (one_date_value.containsKey("price")) {
+                                            price = " price:" + (one_date_value.getString("price").equals("") ? "为空" : one_date_value.getString("price"));
+                                        }
+                                        if (one_date_value.containsKey("desc")) {
+                                            desc = " desc:" + one_date_value.getString("desc");
+                                        }
+                                        Bean_config_chose bean_config_chose = new Bean_config_chose();
+                                        bean_config_chose.setC_version_id(version_id);
+                                        bean_config_chose.setC_congig_name(columnName);
+                                        bean_config_chose.setC_config_value(one_value);
+                                        bean_config_chose.setC_config_desc(desc);
+                                        bean_config_chose.setC_config_price(price);
+                                        bean_config_chose.setC_config_describe(desc_main);
+                                        bean_config_chose.setC_source(filename);
+                                        bean_config_chose.setC_congig_type(title_one);
+                                        dao_choseConfig.MethodInsert(bean_config_chose);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

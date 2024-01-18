@@ -6,7 +6,11 @@
 
     <groupId>org.example</groupId>
     <artifactId>yiche_20240114</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>API_test</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
