@@ -8,9 +8,6 @@
     <artifactId>yiche_20240114</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>API_test</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -63,7 +60,6 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.7</version>
         </dependency>
-
 
         <dependency>
             <groupId>cn.hutool</groupId>
