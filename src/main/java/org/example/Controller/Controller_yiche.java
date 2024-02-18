@@ -80,13 +80,18 @@ public class Controller_yiche {
         return resultJson;
     }
 
-
+//https://mapi.yiche.com/web_api/car_model_api/api/v1/master/get_master_list?cid=508&param=%7B%7D
     public void Method_1_RequestYiche_Brand(String savePath, String main_url, String fileName) {
         try {
-            Document document = Jsoup.parse(new URL(main_url).openStream(), "UTF-8", main_url);
+            String content = Method_RequestAPI(main_url,"{}");
+            if (!content.equals("Error")){
+                saveUntil.Method_SaveFile(savePath + fileName,content);
+                System.out.println("Method_1------>下载完成");
+            }
+//            Document document = Jsoup.parse(new URL(main_url).openStream(), "UTF-8", main_url);
 //            System.out.println(document);
-            saveUntil.Method_SaveFile(savePath + fileName, document.toString());
-            System.out.println("Method_1------>下载完成");
+//            saveUntil.Method_SaveFile(savePath + fileName, document.toString());
+//            System.out.println("Method_1------>下载完成");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -99,37 +104,60 @@ public class Controller_yiche {
         String content = readUntil.Method_ReadFile(path + fileName);
 //        System.out.println(content);
 
-        Document document = Jsoup.parse(content);
+        JSONObject jsonObject = JSONObject.parseObject(content);
+        JSONArray BrandList = jsonObject.getJSONArray("data");
 
-        Elements Item = document.select(".brand-list");
-
-        Elements Item_zimu = Item.select(".brand-list-item");
-
-        for (int i = 0; i < Item_zimu.size(); i++) {
-            Element Item_letter = Item_zimu.get(i).selectFirst(".item-letter");
-            String Brand_letter = Item_letter.text();
-
-            Elements Item_Brands = Item_zimu.get(i).select(".item-brand");
-            for (int j = 0; j < Item_Brands.size(); j++) {
-                Element Item_One_Brand = Item_Brands.get(j);
-
-                String C_brand_id = Item_One_Brand.attr("data-id");
-                String C_brand_name = Item_One_Brand.attr("data-name");
-                String brand_url = "https://car.yiche.com" + Item_One_Brand.select("a").attr("href");
-                String brand_pictureurl = "https:" + Item_One_Brand.select(".brand-icon.lazyload").attr("data-original");
-                Bean_brand bean_brand = new Bean_brand();
-                bean_brand.setC_brand_id(C_brand_id);
-                bean_brand.setC_brand_name(C_brand_name);
-                bean_brand.setC_brand_url(brand_url);
-                bean_brand.setC_brand_picurl(brand_pictureurl);
-                bean_brand.setC_letter(Brand_letter);
-                bean_brand.setC_DownState("否");
-                bean_brand.setC_DownTime("--");
-                bean_brand.setC_备注("");
-                bean_brand.setC_备注时间("");
-                dao_brand.Method_Insert(bean_brand);
-            }
+        for (int i = 0; i < BrandList.size(); i++) {
+            JSONObject oneBrand = BrandList.getJSONObject(i);
+            Bean_brand_json bean_brand = new Bean_brand_json();
+            bean_brand.setC_brandList(oneBrand.getString("brandList"));
+            bean_brand.setC_advertFlag(oneBrand.getString("advertFlag"));
+            bean_brand.setC_advertInfo(oneBrand.getString("advertInfo"));
+            bean_brand.setC_brand_id(oneBrand.getString("id"));
+            bean_brand.setC_name(oneBrand.getString("name"));
+            bean_brand.setC_logoUrl(oneBrand.getString("logoUrl"));
+            bean_brand.setC_logoUrlWp(oneBrand.getString("logoUrlWp"));
+            bean_brand.setC_initial(oneBrand.getString("initial"));
+            bean_brand.setC_logoStory(oneBrand.getString("logoStory"));
+            bean_brand.setC_allSpell(oneBrand.getString("allSpell"));
+            bean_brand.setC_saleStatus(oneBrand.getString("saleStatus"));
+            bean_brand.setC_yiCheHuiTag(oneBrand.getString("yiCheHuiTag"));
+            bean_brand.setC_photoCount(oneBrand.getString("photoCount"));
+            bean_brand.setC_DownState("否");
+            bean_brand.setC_DownTime("--");
+            dao_brand.MethodInsert(bean_brand);
         }
+//        Document document = Jsoup.parse(content);
+//
+//        Elements Item = document.select(".brand-list");
+//
+//        Elements Item_zimu = Item.select(".brand-list-item");
+//
+//        for (int i = 0; i < Item_zimu.size(); i++) {
+//            Element Item_letter = Item_zimu.get(i).selectFirst(".item-letter");
+//            String Brand_letter = Item_letter.text();
+//
+//            Elements Item_Brands = Item_zimu.get(i).select(".item-brand");
+//            for (int j = 0; j < Item_Brands.size(); j++) {
+//                Element Item_One_Brand = Item_Brands.get(j);
+//
+//                String C_brand_id = Item_One_Brand.attr("data-id");
+//                String C_brand_name = Item_One_Brand.attr("data-name");
+//                String brand_url = "https://car.yiche.com" + Item_One_Brand.select("a").attr("href");
+//                String brand_pictureurl = "https:" + Item_One_Brand.select(".brand-icon.lazyload").attr("data-original");
+//                Bean_brand bean_brand = new Bean_brand();
+//                bean_brand.setC_brand_id(C_brand_id);
+//                bean_brand.setC_brand_name(C_brand_name);
+//                bean_brand.setC_brand_url(brand_url);
+//                bean_brand.setC_brand_picurl(brand_pictureurl);
+//                bean_brand.setC_letter(Brand_letter);
+//                bean_brand.setC_DownState("否");
+//                bean_brand.setC_DownTime("--");
+//                bean_brand.setC_备注("");
+//                bean_brand.setC_备注时间("");
+//                dao_brand.Method_Insert(bean_brand);
+//            }
+//        }
         System.out.println("Method_2 ---->品牌完成入库");
     }
 
@@ -139,7 +167,7 @@ public class Controller_yiche {
         ArrayList<Object> BeanList = dao_brand.Method_Find();
 
         for (Object bean : BeanList) {
-            Bean_brand bean_brand = (Bean_brand) bean;
+            Bean_brand_json bean_brand = (Bean_brand_json) bean;
             int C_ID = bean_brand.getC_ID();
             String brand_id = bean_brand.getC_brand_id();
             String DownState = bean_brand.getC_DownState();
@@ -168,9 +196,9 @@ public class Controller_yiche {
         ArrayList<Object> BeanList = dao_brand.Method_Find();
 
         for (Object bean : BeanList) {
-            Bean_brand bean_brand = (Bean_brand) bean;
+            Bean_brand_json bean_brand = (Bean_brand_json) bean;
             String brand_id = bean_brand.getC_brand_id();
-            String brand_name = bean_brand.getC_brand_name();
+            String brand_name = bean_brand.getC_name();
             String connect = readUntil.Method_ReadFile(savePath + brand_id + fileName);
             System.out.println(brand_id);
             JSONArray data = JSON.parseObject(connect).getJSONArray("data");
@@ -353,14 +381,14 @@ public class Controller_yiche {
 //                    System.out.println(content);
                     String status = JSON.parseObject(content).getString("status");
                     if (status.equals("15501")) {
-                       saveUntil.Method_SaveFile(savePath +"Error_"+ model_id + fileName, content);
+                        saveUntil.Method_SaveFile(savePath + "Error_" + model_id + fileName, content);
                         dao_model.Method_ChangeState2(C_ID);
                     }
                     if (status.equals("1")) {
                         saveUntil.Method_SaveFile(savePath + model_id + fileName, content);
                         dao_model.Method_ChangeState(C_ID);
-                        System.out.println("成功保存数据 :"+C_ID);
-                    }else {
+                        System.out.println("成功保存数据 :" + C_ID);
+                    } else {
                         System.out.println(content);
                     }
                 }
@@ -656,7 +684,7 @@ public class Controller_yiche {
                     }
                 }
                 JSONArray onSaleCarList = jsonObject.getJSONArray("onSaleCarList");
-                if (onSaleCarList!= null) {
+                if (onSaleCarList != null) {
                     for (int i = 0; i < onSaleCarList.size(); i++) {
 //                            System.out.println(onSaleCarList);
                         JSONObject Item1_notSale = onSaleCarList.getJSONObject(i);
@@ -792,7 +820,7 @@ public class Controller_yiche {
                     }
                 }
                 JSONArray stopSaleCarList = jsonObject.getJSONArray("stopSaleCarList");
-                if (stopSaleCarList!= null) {
+                if (stopSaleCarList != null) {
                     for (int i = 0; i < stopSaleCarList.size(); i++) {
                         JSONObject Item1_notSale = stopSaleCarList.getJSONObject(i);
                         String year_carList = Item1_notSale.getString("year");
@@ -955,7 +983,7 @@ public class Controller_yiche {
                 String DownState = ((Bean_version) BeanList_FenZu.get(0)).getC_DownState();
 
                 if (DownState.equals("否")) {
-                    System.out.println("第几组 \t"+i+" \t组内个数: " + BeanList_FenZu.size());
+                    System.out.println("第几组 \t" + i + " \t组内个数: " + BeanList_FenZu.size());
                     System.out.println(finall_Versions);
 
                     String param = "{\"carIds\":\"" + finall_Versions + "\",\"cityId\":\"201\"}";
@@ -965,7 +993,7 @@ public class Controller_yiche {
                         if (status.equals("1")) {
                             saveUntil.Method_SaveFile(savePath + i + fileName, connect);
                             dao_version.Method_ChangeState(i);
-                        }else {
+                        } else {
                             System.out.println(connect);
                         }
                     }
@@ -983,20 +1011,20 @@ public class Controller_yiche {
 
         for (int i = 1; i <= All_GroupNumber; i++) {
             String connect = readUntil.Method_ReadFile(savePath + i + fileName);
-            System.out.println(i+fileName);
-//            Method_Analysis_baseConfig(connect, i + fileName);
+            System.out.println(i + fileName);
+            Method_Analysis_baseConfig(connect, i + fileName);
 //            Method_9_Analysis_Config_GetCoumns(connect);
-            Method_Analysis_choseConfig(connect, i + fileName);
+//            Method_Analysis_choseConfig(connect, i + fileName);
         }
     }
 
-    public void Method_9_Analysis_Config_GetCoumns(String content){
+    public void Method_9_Analysis_Config_GetCoumns(String content) {
         DaoFather dao_configcolumn = new DaoFather(0, 3);
         JSONObject jsonObject = JSON.parseObject(content).getJSONObject("data");
         JSONArray Items = jsonObject.getJSONArray("list");
         boolean b = (Items == null);
-        if (!b){
-            if (Items.size()!=0){
+        if (!b) {
+            if (Items.size() != 0) {
                 for (int i = 0; i < Items.size(); i++) {
                     JSONObject Item_One_Title = Items.getJSONObject(i);
 
@@ -1008,17 +1036,17 @@ public class Controller_yiche {
 
                     for (int j = 0; j < Items2.size(); j++) {
                         JSONObject Item_Two_Title = Items2.getJSONObject(j);
-                        String title_2 = title_1+"_"+Item_Two_Title.getString("name");
+                        String title_2 = title_1 + "_" + Item_Two_Title.getString("name");
 //                        System.out.println(title_2);
 
                         Bean_configcolumn bean_configcolumn = new Bean_configcolumn();
                         bean_configcolumn.setC_column_one(title_1);
                         bean_configcolumn.setC_column_two(title_2);
-                    dao_configcolumn.Method_Insert(bean_configcolumn);
+                        dao_configcolumn.Method_Insert(bean_configcolumn);
 
                     }
                 }
-            }else {
+            } else {
 //            saveUntil.Method_SaveFile_True("E:\\ZKZD2023\\易车网\\Erroe.txt", file+"\t");
             }
         }
@@ -1029,6 +1057,7 @@ public class Controller_yiche {
 
 //        1.构建哈希Map
         Map<String, String> columnMap = new HashMap<>();
+        columnMap.put("电池/补能_补能速度", "C_电池补能_补能速度");
         columnMap.put("被动安全_被动行人保护", "C_被动安全_被动行人保护");
         columnMap.put("被动安全_侧安全气帘", "C_被动安全_侧安全气帘");
         columnMap.put("被动安全_第二排侧气囊", "C_被动安全_第二排侧气囊");
@@ -1487,12 +1516,12 @@ public class Controller_yiche {
                                         String price = "";
                                         String desc = "";
                                         if (one_date_value.containsKey("price")) {
-                                            price = " price:" + (one_date_value.getString("price").equals("") ? "为空" : one_date_value.getString("price"));
+                                            price = (one_date_value.getString("price").equals("") ? "" : one_date_value.getString("price"));
                                         }
                                         if (one_date_value.containsKey("desc")) {
-                                            desc = " desc:" + one_date_value.getString("desc");
+                                            desc = one_date_value.getString("desc");
                                         }
-                                        value = value + one_value + price + desc;
+                                        value = value + one_value + desc + price;
                                     }
 
                                     for (int l = 0; l < bean_version_configs_carList.size(); l++) {
@@ -1523,7 +1552,7 @@ public class Controller_yiche {
     }
 
 
-    public static void Method_Analysis_choseConfig(String contentJSON,String filename){
+    public static void Method_Analysis_choseConfig(String contentJSON, String filename) {
         DaoFather dao_choseConfig = new DaoFather(0, 5);
         try {
             JSONObject Item_data = JSON.parseObject(contentJSON).getJSONObject("data");
@@ -1537,7 +1566,7 @@ public class Controller_yiche {
                         JSONObject title_one_Object = Item_list.getJSONObject(i);
                         String title_one = title_one_Object.getString("name");
                         JSONArray title_one_Items = title_one_Object.getJSONArray("items");
-                        if (title_one.equals("选配包")||title_one.equals("特色配置")) {
+                        if (title_one.equals("选配包") || title_one.equals("特色配置")) {
                             for (int j = 0; j < title_one_Items.size(); j++) {
                                 JSONObject title_two_Object = title_one_Items.getJSONObject(j);
                                 String title_two = title_two_Object.getString("name");

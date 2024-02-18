@@ -95,11 +95,11 @@ public class Bean_model {
     }
 
     public String getC_factory_name() {
-        return C_factory_name.replace(" ", "");
+        return C_factory_name;
     }
 
     public void setC_factory_name(String c_factory_name) {
-        C_factory_name = c_factory_name.replace(" ", "");
+        C_factory_name = c_factory_name;
     }
 
     public String getC_advertFlag() {
@@ -127,11 +127,11 @@ public class Bean_model {
     }
 
     public String getC_name() {
-        return C_name.replace(" ", "");
+        return C_name;
     }
 
     public void setC_name(String c_name) {
-        C_name = c_name.replace(" ", "");
+        C_name = c_name;
     }
 
     public String getC_subsidizedReferPrice() {

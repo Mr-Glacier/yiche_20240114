@@ -91,7 +91,7 @@ public class DaoFather {
                     ColumnList += columnName + ",";
 
 //                    String value = method.invoke(obj).toString();
-                    String value = method.invoke(obj).toString() == null ? "-" : method.invoke(obj).toString();
+                    String value = method.invoke(obj) == null ? "-" : method.invoke(obj).toString();
                     if (method.getReturnType() == String.class) {
                         ValueList += "'" + value + "',";
                     } else {
@@ -121,7 +121,7 @@ public class DaoFather {
                 if (method.getName().startsWith("get")) {
                     String columnName = method.getName().replace("get", "");
                     columnList += columnName + ",";
-                    String value = method.invoke(obj) == null ? "空" : method.invoke(obj).toString().replace(" ", "");
+                    String value = method.invoke(obj) == null ? "-" : method.invoke(obj).toString().replace("\t", "").replace("\n", "").replace("\r", "");
                     //如果为空则替换为-
                     if (method.getReturnType() == String.class) {
                         valueList += "'" + value + "',";
