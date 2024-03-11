@@ -192,7 +192,7 @@ public class Controller_yiche {
 
         DaoFather dao_model = new DaoFather(0, 1);
 
-
+        System.out.println("开始解析车型");
         ArrayList<Object> BeanList = dao_brand.Method_Find();
 
         for (Object bean : BeanList) {
@@ -368,31 +368,37 @@ public class Controller_yiche {
         ArrayList<Object> BeanList = dao_model.Method_Find();
 
         for (Object bean : BeanList) {
-            Bean_model bean_model = (Bean_model) bean;
-            String model_id = bean_model.getC_model_id();
-            String DownState = bean_model.getC_DownState();
-            int C_ID = bean_model.getC_ID();
 
-            if (DownState.equals("否")) {
-                String param = "{\"serialId\":\"" + model_id + "\"}";
-                String content = Method_RequestAPI(main_url, param);
-                if (!content.equals("Error")) {
-                    System.out.println(C_ID);
+            String brandid = ((Bean_model) bean).getC_brandId();
+
+            if (brandid.equals("9")||brandid.equals("2")||brandid.equals("3")){
+
+                Bean_model bean_model = (Bean_model) bean;
+                String model_id = bean_model.getC_model_id();
+                String DownState = bean_model.getC_DownState();
+                int C_ID = bean_model.getC_ID();
+                if (DownState.equals("否")) {
+                    String param = "{\"serialId\":\"" + model_id + "\"}";
+                    String content = Method_RequestAPI(main_url, param);
+                    if (!content.equals("Error")) {
+                        System.out.println(C_ID);
 //                    System.out.println(content);
-                    String status = JSON.parseObject(content).getString("status");
-                    if (status.equals("15501")) {
-                        saveUntil.Method_SaveFile(savePath + "Error_" + model_id + fileName, content);
-                        dao_model.Method_ChangeState2(C_ID);
-                    }
-                    if (status.equals("1")) {
-                        saveUntil.Method_SaveFile(savePath + model_id + fileName, content);
-                        dao_model.Method_ChangeState(C_ID);
-                        System.out.println("成功保存数据 :" + C_ID);
-                    } else {
-                        System.out.println(content);
+                        String status = JSON.parseObject(content).getString("status");
+                        if (status.equals("15501")) {
+                            saveUntil.Method_SaveFile(savePath + "Error_" + model_id + fileName, content);
+                            dao_model.Method_ChangeState2(C_ID);
+                        }
+                        if (status.equals("1")) {
+                            saveUntil.Method_SaveFile(savePath + model_id + fileName, content);
+                            dao_model.Method_ChangeState(C_ID);
+                            System.out.println("成功保存数据 :" + C_ID);
+                        } else {
+                            System.out.println(content);
+                        }
                     }
                 }
             }
+
         }
     }
 
@@ -401,560 +407,566 @@ public class Controller_yiche {
         DaoFather dao_version = new DaoFather(0, 2);
         ArrayList<Object> BeanList = dao_model.Method_Find();
 
+
         for (Object bean : BeanList) {
             Bean_model bean_model = (Bean_model) bean;
             String model_id = bean_model.getC_model_id();
             String DownState = bean_model.getC_DownState();
-            if (DownState.equals("是")) {
-                String content = readUntil.Method_ReadFile(savePath + model_id + fileName);
-                System.out.println(model_id);
-                JSONObject jsonObject = JSON.parseObject(content).getJSONObject("data");
-                JSONArray notSaleCarList = jsonObject.getJSONArray("notSaleCarList");
-                if (notSaleCarList != null) {
-                    for (int i = 0; i < notSaleCarList.size(); i++) {
-                        JSONObject Item1_notSale = notSaleCarList.getJSONObject(i);
-                        String year_carList = Item1_notSale.getString("year");
-                        String saleStatusList = Item1_notSale.getString("saleStatusList");
+            String braandId = bean_model.getC_brandId();
 
-                        JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
-                        if (powerList_notSale.size() != 0) {
-                            for (int j = 0; j < powerList_notSale.size(); j++) {
-                                JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
-                                String powerName = powerList_notSale_item.getString("powerName");
-                                JSONArray carList = powerList_notSale_item.getJSONArray("carList");
-                                for (int k = 0; k < carList.size(); k++) {
-                                    JSONObject carList_item = carList.getJSONObject(k);
-                                    String C_id = carList_item.getString("id");
-                                    String C_name = carList_item.getString("name");
-                                    String C_year = carList_item.getString("year");
-                                    String C_saleStatus = carList_item.getString("saleStatus");
-                                    String C_localDealPrice = carList_item.getString("localDealPrice");
-                                    String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
-                                    String C_imageUrl = carList_item.getString("imageUrl");
-                                    String C_entireDealPrice = carList_item.getString("entireDealPrice");
-                                    String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
-                                    String C_serialId = carList_item.getString("serialId");
-                                    String C_serialName = carList_item.getString("serialName");
-                                    String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
-                                    String C_usedCarPrice = carList_item.getString("usedCarPrice");
-                                    String C_dropPrice = carList_item.getString("dropPrice");
-                                    String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
-                                    String C_maintainValue = carList_item.getString("maintainValue");
-                                    String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
-                                    String C_subscribeStatus = carList_item.getString("subscribeStatus");
-                                    String C_referPrice = carList_item.getString("referPrice");
-                                    String C_discountPrice = carList_item.getString("discountPrice");
-                                    String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
-                                    String C_greenStandards = carList_item.getString("greenStandards");
-                                    String C_haveParam = carList_item.getString("haveParam");
-                                    String C_pvPercent = carList_item.getString("pvPercent");
-                                    String C_hasImageFlag = carList_item.getString("hasImageFlag");
-                                    String C_marketDate = carList_item.getString("marketDate");
-                                    String C_params = carList_item.getString("params");
-                                    String C_photoInfo = carList_item.getString("photoInfo");
-                                    String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
-                                    String C_loanVo = carList_item.getString("loanVo");
-                                    String C_businessCardList = carList_item.getString("businessCardList");
-                                    String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
-                                    String C_fuelUnitType = carList_item.getString("fuelUnitType");
-                                    String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
-                                    String C_oilWear = carList_item.getString("oilWear");
-                                    String C_masterId = carList_item.getString("masterId");
-                                    String C_masterName = carList_item.getString("masterName");
-                                    String C_logoUrl = carList_item.getString("logoUrl");
-                                    String C_logoUrlWp = carList_item.getString("logoUrlWp");
-                                    String C_masterAllSpell = carList_item.getString("masterAllSpell");
-                                    String C_minDealPrice = carList_item.getString("minDealPrice");
-                                    String C_invoiceCount = carList_item.getString("invoiceCount");
-                                    String C_brandId = carList_item.getString("brandId");
-                                    String C_brandName = carList_item.getString("brandName");
-                                    String C_imageUrlWp = carList_item.getString("imageUrlWp");
-                                    String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
+            if (braandId.equals("9")||braandId.equals("2")||braandId.equals("3")){
+                if (DownState.equals("是")) {
+                    String content = readUntil.Method_ReadFile(savePath + model_id + fileName);
+                    System.out.println(model_id);
+                    JSONObject jsonObject = JSON.parseObject(content).getJSONObject("data");
+                    JSONArray notSaleCarList = jsonObject.getJSONArray("notSaleCarList");
+                    if (notSaleCarList != null) {
+                        for (int i = 0; i < notSaleCarList.size(); i++) {
+                            JSONObject Item1_notSale = notSaleCarList.getJSONObject(i);
+                            String year_carList = Item1_notSale.getString("year");
+                            String saleStatusList = Item1_notSale.getString("saleStatusList");
+
+                            JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
+                            if (powerList_notSale.size() != 0) {
+                                for (int j = 0; j < powerList_notSale.size(); j++) {
+                                    JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
+                                    String powerName = powerList_notSale_item.getString("powerName");
+                                    JSONArray carList = powerList_notSale_item.getJSONArray("carList");
+                                    for (int k = 0; k < carList.size(); k++) {
+                                        JSONObject carList_item = carList.getJSONObject(k);
+                                        String C_id = carList_item.getString("id");
+                                        String C_name = carList_item.getString("name");
+                                        String C_year = carList_item.getString("year");
+                                        String C_saleStatus = carList_item.getString("saleStatus");
+                                        String C_localDealPrice = carList_item.getString("localDealPrice");
+                                        String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
+                                        String C_imageUrl = carList_item.getString("imageUrl");
+                                        String C_entireDealPrice = carList_item.getString("entireDealPrice");
+                                        String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
+                                        String C_serialId = carList_item.getString("serialId");
+                                        String C_serialName = carList_item.getString("serialName");
+                                        String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
+                                        String C_usedCarPrice = carList_item.getString("usedCarPrice");
+                                        String C_dropPrice = carList_item.getString("dropPrice");
+                                        String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
+                                        String C_maintainValue = carList_item.getString("maintainValue");
+                                        String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
+                                        String C_subscribeStatus = carList_item.getString("subscribeStatus");
+                                        String C_referPrice = carList_item.getString("referPrice");
+                                        String C_discountPrice = carList_item.getString("discountPrice");
+                                        String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
+                                        String C_greenStandards = carList_item.getString("greenStandards");
+                                        String C_haveParam = carList_item.getString("haveParam");
+                                        String C_pvPercent = carList_item.getString("pvPercent");
+                                        String C_hasImageFlag = carList_item.getString("hasImageFlag");
+                                        String C_marketDate = carList_item.getString("marketDate");
+                                        String C_params = carList_item.getString("params");
+                                        String C_photoInfo = carList_item.getString("photoInfo");
+                                        String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
+                                        String C_loanVo = carList_item.getString("loanVo");
+                                        String C_businessCardList = carList_item.getString("businessCardList");
+                                        String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
+                                        String C_fuelUnitType = carList_item.getString("fuelUnitType");
+                                        String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
+                                        String C_oilWear = carList_item.getString("oilWear");
+                                        String C_masterId = carList_item.getString("masterId");
+                                        String C_masterName = carList_item.getString("masterName");
+                                        String C_logoUrl = carList_item.getString("logoUrl");
+                                        String C_logoUrlWp = carList_item.getString("logoUrlWp");
+                                        String C_masterAllSpell = carList_item.getString("masterAllSpell");
+                                        String C_minDealPrice = carList_item.getString("minDealPrice");
+                                        String C_invoiceCount = carList_item.getString("invoiceCount");
+                                        String C_brandId = carList_item.getString("brandId");
+                                        String C_brandName = carList_item.getString("brandName");
+                                        String C_imageUrlWp = carList_item.getString("imageUrlWp");
+                                        String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
 
 
-                                    JSONArray tagList = carList_item.getJSONArray("tagList");
+                                        JSONArray tagList = carList_item.getJSONArray("tagList");
 
-                                    String C_styleType = "无";
-                                    String C_styleType_value = "无";
-                                    if (tagList.size() != 0) {
-                                        C_styleType = tagList.getJSONObject(0).getString("styleType");
-                                        C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        String C_styleType = "无";
+                                        String C_styleType_value = "无";
+                                        if (tagList.size() != 0) {
+                                            C_styleType = tagList.getJSONObject(0).getString("styleType");
+                                            C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        }
+
+
+                                        Bean_version bean_version = new Bean_version();
+
+                                        bean_version.setC_model_id(model_id);
+                                        bean_version.setC_sourceList("notSaleCarList");
+                                        bean_version.setC_year_carList(year_carList);
+                                        bean_version.setC_saleStatusList(saleStatusList);
+                                        bean_version.setC_powerName(powerName);
+                                        bean_version.setC_DownState("否");
+
+                                        bean_version.setC_version_id(C_id);
+                                        bean_version.setC_name(C_name);
+                                        bean_version.setC_year(C_year);
+                                        bean_version.setC_saleStatus(C_saleStatus);
+                                        bean_version.setC_localDealPrice(C_localDealPrice);
+                                        bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
+                                        bean_version.setC_imageUrl(C_imageUrl);
+                                        bean_version.setC_entireDealPrice(C_entireDealPrice);
+                                        bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
+                                        bean_version.setC_serialId(C_serialId);
+                                        bean_version.setC_serialName(C_serialName);
+                                        bean_version.setC_serialSecondLevel(C_serialSecondLevel);
+                                        bean_version.setC_usedCarPrice(C_usedCarPrice);
+                                        bean_version.setC_dropPrice(C_dropPrice);
+                                        bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
+                                        bean_version.setC_maintainValue(C_maintainValue);
+                                        bean_version.setC_cityReferencePrice(C_cityReferencePrice);
+                                        bean_version.setC_subscribeStatus(C_subscribeStatus);
+                                        bean_version.setC_referPrice(C_referPrice);
+                                        bean_version.setC_discountPrice(C_discountPrice);
+                                        bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
+                                        bean_version.setC_greenStandards(C_greenStandards);
+                                        bean_version.setC_haveParam(C_haveParam);
+                                        bean_version.setC_pvPercent(C_pvPercent);
+                                        bean_version.setC_hasImageFlag(C_hasImageFlag);
+                                        bean_version.setC_marketDate(C_marketDate);
+                                        bean_version.setC_params(C_params);
+                                        bean_version.setC_photoInfo(C_photoInfo);
+                                        bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
+                                        bean_version.setC_loanVo(C_loanVo);
+                                        bean_version.setC_businessCardList(C_businessCardList);
+                                        bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
+                                        bean_version.setC_fuelUnitType(C_fuelUnitType);
+                                        bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
+                                        bean_version.setC_oilWear(C_oilWear);
+                                        bean_version.setC_masterId(C_masterId);
+                                        bean_version.setC_masterName(C_masterName);
+                                        bean_version.setC_logoUrl(C_logoUrl);
+                                        bean_version.setC_logoUrlWp(C_logoUrlWp);
+                                        bean_version.setC_masterAllSpell(C_masterAllSpell);
+                                        bean_version.setC_minDealPrice(C_minDealPrice);
+                                        bean_version.setC_invoiceCount(C_invoiceCount);
+                                        bean_version.setC_brandId(C_brandId);
+                                        bean_version.setC_brandName(C_brandName);
+                                        bean_version.setC_imageUrlWp(C_imageUrlWp);
+                                        bean_version.setC_tranAndGearNum(C_tranAndGearNum);
+                                        bean_version.setC_styleType(C_styleType);
+                                        bean_version.setC_styleType_value(C_styleType_value);
+                                        dao_version.MethodInsert(bean_version);
                                     }
-
-
-                                    Bean_version bean_version = new Bean_version();
-
-                                    bean_version.setC_model_id(model_id);
-                                    bean_version.setC_sourceList("notSaleCarList");
-                                    bean_version.setC_year_carList(year_carList);
-                                    bean_version.setC_saleStatusList(saleStatusList);
-                                    bean_version.setC_powerName(powerName);
-                                    bean_version.setC_DownState("否");
-
-                                    bean_version.setC_version_id(C_id);
-                                    bean_version.setC_name(C_name);
-                                    bean_version.setC_year(C_year);
-                                    bean_version.setC_saleStatus(C_saleStatus);
-                                    bean_version.setC_localDealPrice(C_localDealPrice);
-                                    bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
-                                    bean_version.setC_imageUrl(C_imageUrl);
-                                    bean_version.setC_entireDealPrice(C_entireDealPrice);
-                                    bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
-                                    bean_version.setC_serialId(C_serialId);
-                                    bean_version.setC_serialName(C_serialName);
-                                    bean_version.setC_serialSecondLevel(C_serialSecondLevel);
-                                    bean_version.setC_usedCarPrice(C_usedCarPrice);
-                                    bean_version.setC_dropPrice(C_dropPrice);
-                                    bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
-                                    bean_version.setC_maintainValue(C_maintainValue);
-                                    bean_version.setC_cityReferencePrice(C_cityReferencePrice);
-                                    bean_version.setC_subscribeStatus(C_subscribeStatus);
-                                    bean_version.setC_referPrice(C_referPrice);
-                                    bean_version.setC_discountPrice(C_discountPrice);
-                                    bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
-                                    bean_version.setC_greenStandards(C_greenStandards);
-                                    bean_version.setC_haveParam(C_haveParam);
-                                    bean_version.setC_pvPercent(C_pvPercent);
-                                    bean_version.setC_hasImageFlag(C_hasImageFlag);
-                                    bean_version.setC_marketDate(C_marketDate);
-                                    bean_version.setC_params(C_params);
-                                    bean_version.setC_photoInfo(C_photoInfo);
-                                    bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
-                                    bean_version.setC_loanVo(C_loanVo);
-                                    bean_version.setC_businessCardList(C_businessCardList);
-                                    bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
-                                    bean_version.setC_fuelUnitType(C_fuelUnitType);
-                                    bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
-                                    bean_version.setC_oilWear(C_oilWear);
-                                    bean_version.setC_masterId(C_masterId);
-                                    bean_version.setC_masterName(C_masterName);
-                                    bean_version.setC_logoUrl(C_logoUrl);
-                                    bean_version.setC_logoUrlWp(C_logoUrlWp);
-                                    bean_version.setC_masterAllSpell(C_masterAllSpell);
-                                    bean_version.setC_minDealPrice(C_minDealPrice);
-                                    bean_version.setC_invoiceCount(C_invoiceCount);
-                                    bean_version.setC_brandId(C_brandId);
-                                    bean_version.setC_brandName(C_brandName);
-                                    bean_version.setC_imageUrlWp(C_imageUrlWp);
-                                    bean_version.setC_tranAndGearNum(C_tranAndGearNum);
-                                    bean_version.setC_styleType(C_styleType);
-                                    bean_version.setC_styleType_value(C_styleType_value);
-                                    dao_version.MethodInsert(bean_version);
                                 }
                             }
                         }
                     }
-                }
-                JSONArray waitSaleCarList = jsonObject.getJSONArray("waitSaleCarList");
-                if (waitSaleCarList != null) {
-                    for (int i = 0; i < waitSaleCarList.size(); i++) {
-                        JSONObject Item1_notSale = waitSaleCarList.getJSONObject(i);
-                        String year_carList = Item1_notSale.getString("year");
-                        String saleStatusList = Item1_notSale.getString("saleStatusList");
+                    JSONArray waitSaleCarList = jsonObject.getJSONArray("waitSaleCarList");
+                    if (waitSaleCarList != null) {
+                        for (int i = 0; i < waitSaleCarList.size(); i++) {
+                            JSONObject Item1_notSale = waitSaleCarList.getJSONObject(i);
+                            String year_carList = Item1_notSale.getString("year");
+                            String saleStatusList = Item1_notSale.getString("saleStatusList");
 
-                        JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
-                        if (powerList_notSale.size() != 0) {
-                            for (int j = 0; j < powerList_notSale.size(); j++) {
-                                JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
-                                String powerName = powerList_notSale_item.getString("powerName");
-                                JSONArray carList = powerList_notSale_item.getJSONArray("carList");
-                                for (int k = 0; k < carList.size(); k++) {
-                                    JSONObject carList_item = carList.getJSONObject(k);
-                                    String C_id = carList_item.getString("id");
-                                    String C_name = carList_item.getString("name");
-                                    String C_year = carList_item.getString("year");
-                                    String C_saleStatus = carList_item.getString("saleStatus");
-                                    String C_localDealPrice = carList_item.getString("localDealPrice");
-                                    String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
-                                    String C_imageUrl = carList_item.getString("imageUrl");
-                                    String C_entireDealPrice = carList_item.getString("entireDealPrice");
-                                    String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
-                                    String C_serialId = carList_item.getString("serialId");
-                                    String C_serialName = carList_item.getString("serialName");
-                                    String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
-                                    String C_usedCarPrice = carList_item.getString("usedCarPrice");
-                                    String C_dropPrice = carList_item.getString("dropPrice");
-                                    String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
-                                    String C_maintainValue = carList_item.getString("maintainValue");
-                                    String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
-                                    String C_subscribeStatus = carList_item.getString("subscribeStatus");
-                                    String C_referPrice = carList_item.getString("referPrice");
-                                    String C_discountPrice = carList_item.getString("discountPrice");
-                                    String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
-                                    String C_greenStandards = carList_item.getString("greenStandards");
-                                    String C_haveParam = carList_item.getString("haveParam");
-                                    String C_pvPercent = carList_item.getString("pvPercent");
-                                    String C_hasImageFlag = carList_item.getString("hasImageFlag");
-                                    String C_marketDate = carList_item.getString("marketDate");
-                                    String C_params = carList_item.getString("params");
-                                    String C_photoInfo = carList_item.getString("photoInfo");
-                                    String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
-                                    String C_loanVo = carList_item.getString("loanVo");
-                                    String C_businessCardList = carList_item.getString("businessCardList");
-                                    String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
-                                    String C_fuelUnitType = carList_item.getString("fuelUnitType");
-                                    String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
-                                    String C_oilWear = carList_item.getString("oilWear");
-                                    String C_masterId = carList_item.getString("masterId");
-                                    String C_masterName = carList_item.getString("masterName");
-                                    String C_logoUrl = carList_item.getString("logoUrl");
-                                    String C_logoUrlWp = carList_item.getString("logoUrlWp");
-                                    String C_masterAllSpell = carList_item.getString("masterAllSpell");
-                                    String C_minDealPrice = carList_item.getString("minDealPrice");
-                                    String C_invoiceCount = carList_item.getString("invoiceCount");
-                                    String C_brandId = carList_item.getString("brandId");
-                                    String C_brandName = carList_item.getString("brandName");
-                                    String C_imageUrlWp = carList_item.getString("imageUrlWp");
-                                    String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
+                            JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
+                            if (powerList_notSale.size() != 0) {
+                                for (int j = 0; j < powerList_notSale.size(); j++) {
+                                    JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
+                                    String powerName = powerList_notSale_item.getString("powerName");
+                                    JSONArray carList = powerList_notSale_item.getJSONArray("carList");
+                                    for (int k = 0; k < carList.size(); k++) {
+                                        JSONObject carList_item = carList.getJSONObject(k);
+                                        String C_id = carList_item.getString("id");
+                                        String C_name = carList_item.getString("name");
+                                        String C_year = carList_item.getString("year");
+                                        String C_saleStatus = carList_item.getString("saleStatus");
+                                        String C_localDealPrice = carList_item.getString("localDealPrice");
+                                        String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
+                                        String C_imageUrl = carList_item.getString("imageUrl");
+                                        String C_entireDealPrice = carList_item.getString("entireDealPrice");
+                                        String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
+                                        String C_serialId = carList_item.getString("serialId");
+                                        String C_serialName = carList_item.getString("serialName");
+                                        String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
+                                        String C_usedCarPrice = carList_item.getString("usedCarPrice");
+                                        String C_dropPrice = carList_item.getString("dropPrice");
+                                        String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
+                                        String C_maintainValue = carList_item.getString("maintainValue");
+                                        String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
+                                        String C_subscribeStatus = carList_item.getString("subscribeStatus");
+                                        String C_referPrice = carList_item.getString("referPrice");
+                                        String C_discountPrice = carList_item.getString("discountPrice");
+                                        String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
+                                        String C_greenStandards = carList_item.getString("greenStandards");
+                                        String C_haveParam = carList_item.getString("haveParam");
+                                        String C_pvPercent = carList_item.getString("pvPercent");
+                                        String C_hasImageFlag = carList_item.getString("hasImageFlag");
+                                        String C_marketDate = carList_item.getString("marketDate");
+                                        String C_params = carList_item.getString("params");
+                                        String C_photoInfo = carList_item.getString("photoInfo");
+                                        String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
+                                        String C_loanVo = carList_item.getString("loanVo");
+                                        String C_businessCardList = carList_item.getString("businessCardList");
+                                        String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
+                                        String C_fuelUnitType = carList_item.getString("fuelUnitType");
+                                        String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
+                                        String C_oilWear = carList_item.getString("oilWear");
+                                        String C_masterId = carList_item.getString("masterId");
+                                        String C_masterName = carList_item.getString("masterName");
+                                        String C_logoUrl = carList_item.getString("logoUrl");
+                                        String C_logoUrlWp = carList_item.getString("logoUrlWp");
+                                        String C_masterAllSpell = carList_item.getString("masterAllSpell");
+                                        String C_minDealPrice = carList_item.getString("minDealPrice");
+                                        String C_invoiceCount = carList_item.getString("invoiceCount");
+                                        String C_brandId = carList_item.getString("brandId");
+                                        String C_brandName = carList_item.getString("brandName");
+                                        String C_imageUrlWp = carList_item.getString("imageUrlWp");
+                                        String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
 
 
-                                    JSONArray tagList = carList_item.getJSONArray("tagList");
+                                        JSONArray tagList = carList_item.getJSONArray("tagList");
 
-                                    String C_styleType = "无";
-                                    String C_styleType_value = "无";
-                                    if (tagList.size() != 0) {
-                                        C_styleType = tagList.getJSONObject(0).getString("styleType");
-                                        C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        String C_styleType = "无";
+                                        String C_styleType_value = "无";
+                                        if (tagList.size() != 0) {
+                                            C_styleType = tagList.getJSONObject(0).getString("styleType");
+                                            C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        }
+
+
+                                        Bean_version bean_version = new Bean_version();
+
+                                        bean_version.setC_model_id(model_id);
+                                        bean_version.setC_sourceList("waitSaleCarList");
+                                        bean_version.setC_year_carList(year_carList);
+                                        bean_version.setC_saleStatusList(saleStatusList);
+                                        bean_version.setC_powerName(powerName);
+                                        bean_version.setC_DownState("否");
+
+
+                                        bean_version.setC_version_id(C_id);
+                                        bean_version.setC_name(C_name);
+                                        bean_version.setC_year(C_year);
+                                        bean_version.setC_saleStatus(C_saleStatus);
+                                        bean_version.setC_localDealPrice(C_localDealPrice);
+                                        bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
+                                        bean_version.setC_imageUrl(C_imageUrl);
+                                        bean_version.setC_entireDealPrice(C_entireDealPrice);
+                                        bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
+                                        bean_version.setC_serialId(C_serialId);
+                                        bean_version.setC_serialName(C_serialName);
+                                        bean_version.setC_serialSecondLevel(C_serialSecondLevel);
+                                        bean_version.setC_usedCarPrice(C_usedCarPrice);
+                                        bean_version.setC_dropPrice(C_dropPrice);
+                                        bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
+                                        bean_version.setC_maintainValue(C_maintainValue);
+                                        bean_version.setC_cityReferencePrice(C_cityReferencePrice);
+                                        bean_version.setC_subscribeStatus(C_subscribeStatus);
+                                        bean_version.setC_referPrice(C_referPrice);
+                                        bean_version.setC_discountPrice(C_discountPrice);
+                                        bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
+                                        bean_version.setC_greenStandards(C_greenStandards);
+                                        bean_version.setC_haveParam(C_haveParam);
+                                        bean_version.setC_pvPercent(C_pvPercent);
+                                        bean_version.setC_hasImageFlag(C_hasImageFlag);
+                                        bean_version.setC_marketDate(C_marketDate);
+                                        bean_version.setC_params(C_params);
+                                        bean_version.setC_photoInfo(C_photoInfo);
+                                        bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
+                                        bean_version.setC_loanVo(C_loanVo);
+                                        bean_version.setC_businessCardList(C_businessCardList);
+                                        bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
+                                        bean_version.setC_fuelUnitType(C_fuelUnitType);
+                                        bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
+                                        bean_version.setC_oilWear(C_oilWear);
+                                        bean_version.setC_masterId(C_masterId);
+                                        bean_version.setC_masterName(C_masterName);
+                                        bean_version.setC_logoUrl(C_logoUrl);
+                                        bean_version.setC_logoUrlWp(C_logoUrlWp);
+                                        bean_version.setC_masterAllSpell(C_masterAllSpell);
+                                        bean_version.setC_minDealPrice(C_minDealPrice);
+                                        bean_version.setC_invoiceCount(C_invoiceCount);
+                                        bean_version.setC_brandId(C_brandId);
+                                        bean_version.setC_brandName(C_brandName);
+                                        bean_version.setC_imageUrlWp(C_imageUrlWp);
+                                        bean_version.setC_tranAndGearNum(C_tranAndGearNum);
+                                        bean_version.setC_styleType(C_styleType);
+                                        bean_version.setC_styleType_value(C_styleType_value);
+
+                                        dao_version.MethodInsert(bean_version);
                                     }
-
-
-                                    Bean_version bean_version = new Bean_version();
-
-                                    bean_version.setC_model_id(model_id);
-                                    bean_version.setC_sourceList("waitSaleCarList");
-                                    bean_version.setC_year_carList(year_carList);
-                                    bean_version.setC_saleStatusList(saleStatusList);
-                                    bean_version.setC_powerName(powerName);
-                                    bean_version.setC_DownState("否");
-
-
-                                    bean_version.setC_version_id(C_id);
-                                    bean_version.setC_name(C_name);
-                                    bean_version.setC_year(C_year);
-                                    bean_version.setC_saleStatus(C_saleStatus);
-                                    bean_version.setC_localDealPrice(C_localDealPrice);
-                                    bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
-                                    bean_version.setC_imageUrl(C_imageUrl);
-                                    bean_version.setC_entireDealPrice(C_entireDealPrice);
-                                    bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
-                                    bean_version.setC_serialId(C_serialId);
-                                    bean_version.setC_serialName(C_serialName);
-                                    bean_version.setC_serialSecondLevel(C_serialSecondLevel);
-                                    bean_version.setC_usedCarPrice(C_usedCarPrice);
-                                    bean_version.setC_dropPrice(C_dropPrice);
-                                    bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
-                                    bean_version.setC_maintainValue(C_maintainValue);
-                                    bean_version.setC_cityReferencePrice(C_cityReferencePrice);
-                                    bean_version.setC_subscribeStatus(C_subscribeStatus);
-                                    bean_version.setC_referPrice(C_referPrice);
-                                    bean_version.setC_discountPrice(C_discountPrice);
-                                    bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
-                                    bean_version.setC_greenStandards(C_greenStandards);
-                                    bean_version.setC_haveParam(C_haveParam);
-                                    bean_version.setC_pvPercent(C_pvPercent);
-                                    bean_version.setC_hasImageFlag(C_hasImageFlag);
-                                    bean_version.setC_marketDate(C_marketDate);
-                                    bean_version.setC_params(C_params);
-                                    bean_version.setC_photoInfo(C_photoInfo);
-                                    bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
-                                    bean_version.setC_loanVo(C_loanVo);
-                                    bean_version.setC_businessCardList(C_businessCardList);
-                                    bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
-                                    bean_version.setC_fuelUnitType(C_fuelUnitType);
-                                    bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
-                                    bean_version.setC_oilWear(C_oilWear);
-                                    bean_version.setC_masterId(C_masterId);
-                                    bean_version.setC_masterName(C_masterName);
-                                    bean_version.setC_logoUrl(C_logoUrl);
-                                    bean_version.setC_logoUrlWp(C_logoUrlWp);
-                                    bean_version.setC_masterAllSpell(C_masterAllSpell);
-                                    bean_version.setC_minDealPrice(C_minDealPrice);
-                                    bean_version.setC_invoiceCount(C_invoiceCount);
-                                    bean_version.setC_brandId(C_brandId);
-                                    bean_version.setC_brandName(C_brandName);
-                                    bean_version.setC_imageUrlWp(C_imageUrlWp);
-                                    bean_version.setC_tranAndGearNum(C_tranAndGearNum);
-                                    bean_version.setC_styleType(C_styleType);
-                                    bean_version.setC_styleType_value(C_styleType_value);
-
-                                    dao_version.MethodInsert(bean_version);
                                 }
                             }
                         }
                     }
-                }
-                JSONArray onSaleCarList = jsonObject.getJSONArray("onSaleCarList");
-                if (onSaleCarList != null) {
-                    for (int i = 0; i < onSaleCarList.size(); i++) {
+                    JSONArray onSaleCarList = jsonObject.getJSONArray("onSaleCarList");
+                    if (onSaleCarList != null) {
+                        for (int i = 0; i < onSaleCarList.size(); i++) {
 //                            System.out.println(onSaleCarList);
-                        JSONObject Item1_notSale = onSaleCarList.getJSONObject(i);
-                        String year_carList = Item1_notSale.getString("year");
-                        String saleStatusList = Item1_notSale.getString("saleStatusList");
+                            JSONObject Item1_notSale = onSaleCarList.getJSONObject(i);
+                            String year_carList = Item1_notSale.getString("year");
+                            String saleStatusList = Item1_notSale.getString("saleStatusList");
 
-                        JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
-                        if (powerList_notSale.size() != 0) {
-                            for (int j = 0; j < powerList_notSale.size(); j++) {
-                                JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
-                                String powerName = powerList_notSale_item.getString("powerName");
-                                JSONArray carList = powerList_notSale_item.getJSONArray("carList");
-                                for (int k = 0; k < carList.size(); k++) {
-                                    JSONObject carList_item = carList.getJSONObject(k);
-                                    String C_id = carList_item.getString("id");
-                                    String C_name = carList_item.getString("name");
-                                    String C_year = carList_item.getString("year");
-                                    String C_saleStatus = carList_item.getString("saleStatus");
-                                    String C_localDealPrice = carList_item.getString("localDealPrice");
-                                    String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
-                                    String C_imageUrl = carList_item.getString("imageUrl");
-                                    String C_entireDealPrice = carList_item.getString("entireDealPrice");
-                                    String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
-                                    String C_serialId = carList_item.getString("serialId");
-                                    String C_serialName = carList_item.getString("serialName");
-                                    String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
-                                    String C_usedCarPrice = carList_item.getString("usedCarPrice");
-                                    String C_dropPrice = carList_item.getString("dropPrice");
-                                    String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
-                                    String C_maintainValue = carList_item.getString("maintainValue");
-                                    String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
-                                    String C_subscribeStatus = carList_item.getString("subscribeStatus");
-                                    String C_referPrice = carList_item.getString("referPrice");
-                                    String C_discountPrice = carList_item.getString("discountPrice");
-                                    String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
-                                    String C_greenStandards = carList_item.getString("greenStandards");
-                                    String C_haveParam = carList_item.getString("haveParam");
-                                    String C_pvPercent = carList_item.getString("pvPercent");
-                                    String C_hasImageFlag = carList_item.getString("hasImageFlag");
-                                    String C_marketDate = carList_item.getString("marketDate");
-                                    String C_params = carList_item.getString("params");
-                                    String C_photoInfo = carList_item.getString("photoInfo");
-                                    String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
-                                    String C_loanVo = carList_item.getString("loanVo");
-                                    String C_businessCardList = carList_item.getString("businessCardList");
-                                    String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
-                                    String C_fuelUnitType = carList_item.getString("fuelUnitType");
-                                    String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
-                                    String C_oilWear = carList_item.getString("oilWear");
-                                    String C_masterId = carList_item.getString("masterId");
-                                    String C_masterName = carList_item.getString("masterName");
-                                    String C_logoUrl = carList_item.getString("logoUrl");
-                                    String C_logoUrlWp = carList_item.getString("logoUrlWp");
-                                    String C_masterAllSpell = carList_item.getString("masterAllSpell");
-                                    String C_minDealPrice = carList_item.getString("minDealPrice");
-                                    String C_invoiceCount = carList_item.getString("invoiceCount");
-                                    String C_brandId = carList_item.getString("brandId");
-                                    String C_brandName = carList_item.getString("brandName");
-                                    String C_imageUrlWp = carList_item.getString("imageUrlWp");
-                                    String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
+                            JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
+                            if (powerList_notSale.size() != 0) {
+                                for (int j = 0; j < powerList_notSale.size(); j++) {
+                                    JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
+                                    String powerName = powerList_notSale_item.getString("powerName");
+                                    JSONArray carList = powerList_notSale_item.getJSONArray("carList");
+                                    for (int k = 0; k < carList.size(); k++) {
+                                        JSONObject carList_item = carList.getJSONObject(k);
+                                        String C_id = carList_item.getString("id");
+                                        String C_name = carList_item.getString("name");
+                                        String C_year = carList_item.getString("year");
+                                        String C_saleStatus = carList_item.getString("saleStatus");
+                                        String C_localDealPrice = carList_item.getString("localDealPrice");
+                                        String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
+                                        String C_imageUrl = carList_item.getString("imageUrl");
+                                        String C_entireDealPrice = carList_item.getString("entireDealPrice");
+                                        String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
+                                        String C_serialId = carList_item.getString("serialId");
+                                        String C_serialName = carList_item.getString("serialName");
+                                        String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
+                                        String C_usedCarPrice = carList_item.getString("usedCarPrice");
+                                        String C_dropPrice = carList_item.getString("dropPrice");
+                                        String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
+                                        String C_maintainValue = carList_item.getString("maintainValue");
+                                        String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
+                                        String C_subscribeStatus = carList_item.getString("subscribeStatus");
+                                        String C_referPrice = carList_item.getString("referPrice");
+                                        String C_discountPrice = carList_item.getString("discountPrice");
+                                        String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
+                                        String C_greenStandards = carList_item.getString("greenStandards");
+                                        String C_haveParam = carList_item.getString("haveParam");
+                                        String C_pvPercent = carList_item.getString("pvPercent");
+                                        String C_hasImageFlag = carList_item.getString("hasImageFlag");
+                                        String C_marketDate = carList_item.getString("marketDate");
+                                        String C_params = carList_item.getString("params");
+                                        String C_photoInfo = carList_item.getString("photoInfo");
+                                        String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
+                                        String C_loanVo = carList_item.getString("loanVo");
+                                        String C_businessCardList = carList_item.getString("businessCardList");
+                                        String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
+                                        String C_fuelUnitType = carList_item.getString("fuelUnitType");
+                                        String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
+                                        String C_oilWear = carList_item.getString("oilWear");
+                                        String C_masterId = carList_item.getString("masterId");
+                                        String C_masterName = carList_item.getString("masterName");
+                                        String C_logoUrl = carList_item.getString("logoUrl");
+                                        String C_logoUrlWp = carList_item.getString("logoUrlWp");
+                                        String C_masterAllSpell = carList_item.getString("masterAllSpell");
+                                        String C_minDealPrice = carList_item.getString("minDealPrice");
+                                        String C_invoiceCount = carList_item.getString("invoiceCount");
+                                        String C_brandId = carList_item.getString("brandId");
+                                        String C_brandName = carList_item.getString("brandName");
+                                        String C_imageUrlWp = carList_item.getString("imageUrlWp");
+                                        String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
 
 
-                                    JSONArray tagList = carList_item.getJSONArray("tagList");
+                                        JSONArray tagList = carList_item.getJSONArray("tagList");
 
-                                    String C_styleType = "无";
-                                    String C_styleType_value = "无";
-                                    if (tagList.size() != 0) {
-                                        C_styleType = tagList.getJSONObject(0).getString("styleType");
-                                        C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        String C_styleType = "无";
+                                        String C_styleType_value = "无";
+                                        if (tagList.size() != 0) {
+                                            C_styleType = tagList.getJSONObject(0).getString("styleType");
+                                            C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        }
+
+                                        Bean_version bean_version = new Bean_version();
+
+                                        bean_version.setC_model_id(model_id);
+                                        bean_version.setC_sourceList("onSaleCarList");
+                                        bean_version.setC_year_carList(year_carList);
+                                        bean_version.setC_saleStatusList(saleStatusList);
+                                        bean_version.setC_powerName(powerName);
+                                        bean_version.setC_DownState("否");
+
+                                        bean_version.setC_version_id(C_id);
+                                        bean_version.setC_name(C_name);
+                                        bean_version.setC_year(C_year);
+                                        bean_version.setC_saleStatus(C_saleStatus);
+                                        bean_version.setC_localDealPrice(C_localDealPrice);
+                                        bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
+                                        bean_version.setC_imageUrl(C_imageUrl);
+                                        bean_version.setC_entireDealPrice(C_entireDealPrice);
+                                        bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
+                                        bean_version.setC_serialId(C_serialId);
+                                        bean_version.setC_serialName(C_serialName);
+                                        bean_version.setC_serialSecondLevel(C_serialSecondLevel);
+                                        bean_version.setC_usedCarPrice(C_usedCarPrice);
+                                        bean_version.setC_dropPrice(C_dropPrice);
+                                        bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
+                                        bean_version.setC_maintainValue(C_maintainValue);
+                                        bean_version.setC_cityReferencePrice(C_cityReferencePrice);
+                                        bean_version.setC_subscribeStatus(C_subscribeStatus);
+                                        bean_version.setC_referPrice(C_referPrice);
+                                        bean_version.setC_discountPrice(C_discountPrice);
+                                        bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
+                                        bean_version.setC_greenStandards(C_greenStandards);
+                                        bean_version.setC_haveParam(C_haveParam);
+                                        bean_version.setC_pvPercent(C_pvPercent);
+                                        bean_version.setC_hasImageFlag(C_hasImageFlag);
+                                        bean_version.setC_marketDate(C_marketDate);
+                                        bean_version.setC_params(C_params);
+                                        bean_version.setC_photoInfo(C_photoInfo);
+                                        bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
+                                        bean_version.setC_loanVo(C_loanVo);
+                                        bean_version.setC_businessCardList(C_businessCardList);
+                                        bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
+                                        bean_version.setC_fuelUnitType(C_fuelUnitType);
+                                        bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
+                                        bean_version.setC_oilWear(C_oilWear);
+                                        bean_version.setC_masterId(C_masterId);
+                                        bean_version.setC_masterName(C_masterName);
+                                        bean_version.setC_logoUrl(C_logoUrl);
+                                        bean_version.setC_logoUrlWp(C_logoUrlWp);
+                                        bean_version.setC_masterAllSpell(C_masterAllSpell);
+                                        bean_version.setC_minDealPrice(C_minDealPrice);
+                                        bean_version.setC_invoiceCount(C_invoiceCount);
+                                        bean_version.setC_brandId(C_brandId);
+                                        bean_version.setC_brandName(C_brandName);
+                                        bean_version.setC_imageUrlWp(C_imageUrlWp);
+                                        bean_version.setC_tranAndGearNum(C_tranAndGearNum);
+                                        bean_version.setC_styleType(C_styleType);
+                                        bean_version.setC_styleType_value(C_styleType_value);
+                                        dao_version.MethodInsert(bean_version);
                                     }
-
-                                    Bean_version bean_version = new Bean_version();
-
-                                    bean_version.setC_model_id(model_id);
-                                    bean_version.setC_sourceList("onSaleCarList");
-                                    bean_version.setC_year_carList(year_carList);
-                                    bean_version.setC_saleStatusList(saleStatusList);
-                                    bean_version.setC_powerName(powerName);
-                                    bean_version.setC_DownState("否");
-
-                                    bean_version.setC_version_id(C_id);
-                                    bean_version.setC_name(C_name);
-                                    bean_version.setC_year(C_year);
-                                    bean_version.setC_saleStatus(C_saleStatus);
-                                    bean_version.setC_localDealPrice(C_localDealPrice);
-                                    bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
-                                    bean_version.setC_imageUrl(C_imageUrl);
-                                    bean_version.setC_entireDealPrice(C_entireDealPrice);
-                                    bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
-                                    bean_version.setC_serialId(C_serialId);
-                                    bean_version.setC_serialName(C_serialName);
-                                    bean_version.setC_serialSecondLevel(C_serialSecondLevel);
-                                    bean_version.setC_usedCarPrice(C_usedCarPrice);
-                                    bean_version.setC_dropPrice(C_dropPrice);
-                                    bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
-                                    bean_version.setC_maintainValue(C_maintainValue);
-                                    bean_version.setC_cityReferencePrice(C_cityReferencePrice);
-                                    bean_version.setC_subscribeStatus(C_subscribeStatus);
-                                    bean_version.setC_referPrice(C_referPrice);
-                                    bean_version.setC_discountPrice(C_discountPrice);
-                                    bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
-                                    bean_version.setC_greenStandards(C_greenStandards);
-                                    bean_version.setC_haveParam(C_haveParam);
-                                    bean_version.setC_pvPercent(C_pvPercent);
-                                    bean_version.setC_hasImageFlag(C_hasImageFlag);
-                                    bean_version.setC_marketDate(C_marketDate);
-                                    bean_version.setC_params(C_params);
-                                    bean_version.setC_photoInfo(C_photoInfo);
-                                    bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
-                                    bean_version.setC_loanVo(C_loanVo);
-                                    bean_version.setC_businessCardList(C_businessCardList);
-                                    bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
-                                    bean_version.setC_fuelUnitType(C_fuelUnitType);
-                                    bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
-                                    bean_version.setC_oilWear(C_oilWear);
-                                    bean_version.setC_masterId(C_masterId);
-                                    bean_version.setC_masterName(C_masterName);
-                                    bean_version.setC_logoUrl(C_logoUrl);
-                                    bean_version.setC_logoUrlWp(C_logoUrlWp);
-                                    bean_version.setC_masterAllSpell(C_masterAllSpell);
-                                    bean_version.setC_minDealPrice(C_minDealPrice);
-                                    bean_version.setC_invoiceCount(C_invoiceCount);
-                                    bean_version.setC_brandId(C_brandId);
-                                    bean_version.setC_brandName(C_brandName);
-                                    bean_version.setC_imageUrlWp(C_imageUrlWp);
-                                    bean_version.setC_tranAndGearNum(C_tranAndGearNum);
-                                    bean_version.setC_styleType(C_styleType);
-                                    bean_version.setC_styleType_value(C_styleType_value);
-                                    dao_version.MethodInsert(bean_version);
                                 }
                             }
                         }
                     }
-                }
-                JSONArray stopSaleCarList = jsonObject.getJSONArray("stopSaleCarList");
-                if (stopSaleCarList != null) {
-                    for (int i = 0; i < stopSaleCarList.size(); i++) {
-                        JSONObject Item1_notSale = stopSaleCarList.getJSONObject(i);
-                        String year_carList = Item1_notSale.getString("year");
-                        String saleStatusList = Item1_notSale.getString("saleStatusList");
+                    JSONArray stopSaleCarList = jsonObject.getJSONArray("stopSaleCarList");
+                    if (stopSaleCarList != null) {
+                        for (int i = 0; i < stopSaleCarList.size(); i++) {
+                            JSONObject Item1_notSale = stopSaleCarList.getJSONObject(i);
+                            String year_carList = Item1_notSale.getString("year");
+                            String saleStatusList = Item1_notSale.getString("saleStatusList");
 
-                        JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
-                        if (powerList_notSale.size() != 0) {
-                            for (int j = 0; j < powerList_notSale.size(); j++) {
-                                JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
-                                String powerName = powerList_notSale_item.getString("powerName");
-                                JSONArray carList = powerList_notSale_item.getJSONArray("carList");
-                                for (int k = 0; k < carList.size(); k++) {
-                                    JSONObject carList_item = carList.getJSONObject(k);
-                                    String C_id = carList_item.getString("id");
-                                    String C_name = carList_item.getString("name");
-                                    String C_year = carList_item.getString("year");
-                                    String C_saleStatus = carList_item.getString("saleStatus");
-                                    String C_localDealPrice = carList_item.getString("localDealPrice");
-                                    String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
-                                    String C_imageUrl = carList_item.getString("imageUrl");
-                                    String C_entireDealPrice = carList_item.getString("entireDealPrice");
-                                    String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
-                                    String C_serialId = carList_item.getString("serialId");
-                                    String C_serialName = carList_item.getString("serialName");
-                                    String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
-                                    String C_usedCarPrice = carList_item.getString("usedCarPrice");
-                                    String C_dropPrice = carList_item.getString("dropPrice");
-                                    String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
-                                    String C_maintainValue = carList_item.getString("maintainValue");
-                                    String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
-                                    String C_subscribeStatus = carList_item.getString("subscribeStatus");
-                                    String C_referPrice = carList_item.getString("referPrice");
-                                    String C_discountPrice = carList_item.getString("discountPrice");
-                                    String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
-                                    String C_greenStandards = carList_item.getString("greenStandards");
-                                    String C_haveParam = carList_item.getString("haveParam");
-                                    String C_pvPercent = carList_item.getString("pvPercent");
-                                    String C_hasImageFlag = carList_item.getString("hasImageFlag");
-                                    String C_marketDate = carList_item.getString("marketDate");
-                                    String C_params = carList_item.getString("params");
-                                    String C_photoInfo = carList_item.getString("photoInfo");
-                                    String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
-                                    String C_loanVo = carList_item.getString("loanVo");
-                                    String C_businessCardList = carList_item.getString("businessCardList");
-                                    String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
-                                    String C_fuelUnitType = carList_item.getString("fuelUnitType");
-                                    String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
-                                    String C_oilWear = carList_item.getString("oilWear");
-                                    String C_masterId = carList_item.getString("masterId");
-                                    String C_masterName = carList_item.getString("masterName");
-                                    String C_logoUrl = carList_item.getString("logoUrl");
-                                    String C_logoUrlWp = carList_item.getString("logoUrlWp");
-                                    String C_masterAllSpell = carList_item.getString("masterAllSpell");
-                                    String C_minDealPrice = carList_item.getString("minDealPrice");
-                                    String C_invoiceCount = carList_item.getString("invoiceCount");
-                                    String C_brandId = carList_item.getString("brandId");
-                                    String C_brandName = carList_item.getString("brandName");
-                                    String C_imageUrlWp = carList_item.getString("imageUrlWp");
-                                    String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
+                            JSONArray powerList_notSale = Item1_notSale.getJSONArray("powerList");
+                            if (powerList_notSale.size() != 0) {
+                                for (int j = 0; j < powerList_notSale.size(); j++) {
+                                    JSONObject powerList_notSale_item = powerList_notSale.getJSONObject(j);
+                                    String powerName = powerList_notSale_item.getString("powerName");
+                                    JSONArray carList = powerList_notSale_item.getJSONArray("carList");
+                                    for (int k = 0; k < carList.size(); k++) {
+                                        JSONObject carList_item = carList.getJSONObject(k);
+                                        String C_id = carList_item.getString("id");
+                                        String C_name = carList_item.getString("name");
+                                        String C_year = carList_item.getString("year");
+                                        String C_saleStatus = carList_item.getString("saleStatus");
+                                        String C_localDealPrice = carList_item.getString("localDealPrice");
+                                        String C_locaLatestDealPrice = carList_item.getString("locaLatestDealPrice");
+                                        String C_imageUrl = carList_item.getString("imageUrl");
+                                        String C_entireDealPrice = carList_item.getString("entireDealPrice");
+                                        String C_dealFinalPriceInfo = carList_item.getString("dealFinalPriceInfo");
+                                        String C_serialId = carList_item.getString("serialId");
+                                        String C_serialName = carList_item.getString("serialName");
+                                        String C_serialSecondLevel = carList_item.getString("serialSecondLevel");
+                                        String C_usedCarPrice = carList_item.getString("usedCarPrice");
+                                        String C_dropPrice = carList_item.getString("dropPrice");
+                                        String C_dealerDropAfterPrice = carList_item.getString("dealerDropAfterPrice");
+                                        String C_maintainValue = carList_item.getString("maintainValue");
+                                        String C_cityReferencePrice = carList_item.getString("cityReferencePrice");
+                                        String C_subscribeStatus = carList_item.getString("subscribeStatus");
+                                        String C_referPrice = carList_item.getString("referPrice");
+                                        String C_discountPrice = carList_item.getString("discountPrice");
+                                        String C_subsidizedReferPrice = carList_item.getString("subsidizedReferPrice");
+                                        String C_greenStandards = carList_item.getString("greenStandards");
+                                        String C_haveParam = carList_item.getString("haveParam");
+                                        String C_pvPercent = carList_item.getString("pvPercent");
+                                        String C_hasImageFlag = carList_item.getString("hasImageFlag");
+                                        String C_marketDate = carList_item.getString("marketDate");
+                                        String C_params = carList_item.getString("params");
+                                        String C_photoInfo = carList_item.getString("photoInfo");
+                                        String C_yiCheHuiTag = carList_item.getString("yiCheHuiTag");
+                                        String C_loanVo = carList_item.getString("loanVo");
+                                        String C_businessCardList = carList_item.getString("businessCardList");
+                                        String C_oilFuelTypeInt = carList_item.getString("oilFuelTypeInt");
+                                        String C_fuelUnitType = carList_item.getString("fuelUnitType");
+                                        String C_electricRechargeMileage = carList_item.getString("electricRechargeMileage");
+                                        String C_oilWear = carList_item.getString("oilWear");
+                                        String C_masterId = carList_item.getString("masterId");
+                                        String C_masterName = carList_item.getString("masterName");
+                                        String C_logoUrl = carList_item.getString("logoUrl");
+                                        String C_logoUrlWp = carList_item.getString("logoUrlWp");
+                                        String C_masterAllSpell = carList_item.getString("masterAllSpell");
+                                        String C_minDealPrice = carList_item.getString("minDealPrice");
+                                        String C_invoiceCount = carList_item.getString("invoiceCount");
+                                        String C_brandId = carList_item.getString("brandId");
+                                        String C_brandName = carList_item.getString("brandName");
+                                        String C_imageUrlWp = carList_item.getString("imageUrlWp");
+                                        String C_tranAndGearNum = carList_item.getString("tranAndGearNum");
 
 
-                                    JSONArray tagList = carList_item.getJSONArray("tagList");
-                                    String C_styleType = "无";
-                                    String C_styleType_value = "无";
-                                    if (tagList.size() != 0) {
-                                        C_styleType = tagList.getJSONObject(0).getString("styleType");
-                                        C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        JSONArray tagList = carList_item.getJSONArray("tagList");
+                                        String C_styleType = "无";
+                                        String C_styleType_value = "无";
+                                        if (tagList.size() != 0) {
+                                            C_styleType = tagList.getJSONObject(0).getString("styleType");
+                                            C_styleType_value = tagList.getJSONObject(0).getString("value");
+                                        }
+
+
+                                        Bean_version bean_version = new Bean_version();
+                                        bean_version.setC_DownState("否");
+                                        bean_version.setC_model_id(model_id);
+                                        bean_version.setC_sourceList("stopSaleCarList");
+                                        bean_version.setC_year_carList(year_carList);
+                                        bean_version.setC_saleStatusList(saleStatusList);
+                                        bean_version.setC_powerName(powerName);
+
+                                        bean_version.setC_version_id(C_id);
+                                        bean_version.setC_name(C_name);
+                                        bean_version.setC_year(C_year);
+                                        bean_version.setC_saleStatus(C_saleStatus);
+                                        bean_version.setC_localDealPrice(C_localDealPrice);
+                                        bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
+                                        bean_version.setC_imageUrl(C_imageUrl);
+                                        bean_version.setC_entireDealPrice(C_entireDealPrice);
+                                        bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
+                                        bean_version.setC_serialId(C_serialId);
+                                        bean_version.setC_serialName(C_serialName);
+                                        bean_version.setC_serialSecondLevel(C_serialSecondLevel);
+                                        bean_version.setC_usedCarPrice(C_usedCarPrice);
+                                        bean_version.setC_dropPrice(C_dropPrice);
+                                        bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
+                                        bean_version.setC_maintainValue(C_maintainValue);
+                                        bean_version.setC_cityReferencePrice(C_cityReferencePrice);
+                                        bean_version.setC_subscribeStatus(C_subscribeStatus);
+                                        bean_version.setC_referPrice(C_referPrice);
+                                        bean_version.setC_discountPrice(C_discountPrice);
+                                        bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
+                                        bean_version.setC_greenStandards(C_greenStandards);
+                                        bean_version.setC_haveParam(C_haveParam);
+                                        bean_version.setC_pvPercent(C_pvPercent);
+                                        bean_version.setC_hasImageFlag(C_hasImageFlag);
+                                        bean_version.setC_marketDate(C_marketDate);
+                                        bean_version.setC_params(C_params);
+                                        bean_version.setC_photoInfo(C_photoInfo);
+                                        bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
+                                        bean_version.setC_loanVo(C_loanVo);
+                                        bean_version.setC_businessCardList(C_businessCardList);
+                                        bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
+                                        bean_version.setC_fuelUnitType(C_fuelUnitType);
+                                        bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
+                                        bean_version.setC_oilWear(C_oilWear);
+                                        bean_version.setC_masterId(C_masterId);
+                                        bean_version.setC_masterName(C_masterName);
+                                        bean_version.setC_logoUrl(C_logoUrl);
+                                        bean_version.setC_logoUrlWp(C_logoUrlWp);
+                                        bean_version.setC_masterAllSpell(C_masterAllSpell);
+                                        bean_version.setC_minDealPrice(C_minDealPrice);
+                                        bean_version.setC_invoiceCount(C_invoiceCount);
+                                        bean_version.setC_brandId(C_brandId);
+                                        bean_version.setC_brandName(C_brandName);
+                                        bean_version.setC_imageUrlWp(C_imageUrlWp);
+                                        bean_version.setC_tranAndGearNum(C_tranAndGearNum);
+                                        bean_version.setC_styleType(C_styleType);
+                                        bean_version.setC_styleType_value(C_styleType_value);
+
+                                        dao_version.MethodInsert(bean_version);
                                     }
-
-
-                                    Bean_version bean_version = new Bean_version();
-                                    bean_version.setC_DownState("否");
-                                    bean_version.setC_model_id(model_id);
-                                    bean_version.setC_sourceList("stopSaleCarList");
-                                    bean_version.setC_year_carList(year_carList);
-                                    bean_version.setC_saleStatusList(saleStatusList);
-                                    bean_version.setC_powerName(powerName);
-
-                                    bean_version.setC_version_id(C_id);
-                                    bean_version.setC_name(C_name);
-                                    bean_version.setC_year(C_year);
-                                    bean_version.setC_saleStatus(C_saleStatus);
-                                    bean_version.setC_localDealPrice(C_localDealPrice);
-                                    bean_version.setC_locaLatestDealPrice(C_locaLatestDealPrice);
-                                    bean_version.setC_imageUrl(C_imageUrl);
-                                    bean_version.setC_entireDealPrice(C_entireDealPrice);
-                                    bean_version.setC_dealFinalPriceInfo(C_dealFinalPriceInfo);
-                                    bean_version.setC_serialId(C_serialId);
-                                    bean_version.setC_serialName(C_serialName);
-                                    bean_version.setC_serialSecondLevel(C_serialSecondLevel);
-                                    bean_version.setC_usedCarPrice(C_usedCarPrice);
-                                    bean_version.setC_dropPrice(C_dropPrice);
-                                    bean_version.setC_dealerDropAfterPrice(C_dealerDropAfterPrice);
-                                    bean_version.setC_maintainValue(C_maintainValue);
-                                    bean_version.setC_cityReferencePrice(C_cityReferencePrice);
-                                    bean_version.setC_subscribeStatus(C_subscribeStatus);
-                                    bean_version.setC_referPrice(C_referPrice);
-                                    bean_version.setC_discountPrice(C_discountPrice);
-                                    bean_version.setC_subsidizedReferPrice(C_subsidizedReferPrice);
-                                    bean_version.setC_greenStandards(C_greenStandards);
-                                    bean_version.setC_haveParam(C_haveParam);
-                                    bean_version.setC_pvPercent(C_pvPercent);
-                                    bean_version.setC_hasImageFlag(C_hasImageFlag);
-                                    bean_version.setC_marketDate(C_marketDate);
-                                    bean_version.setC_params(C_params);
-                                    bean_version.setC_photoInfo(C_photoInfo);
-                                    bean_version.setC_yiCheHuiTag(C_yiCheHuiTag);
-                                    bean_version.setC_loanVo(C_loanVo);
-                                    bean_version.setC_businessCardList(C_businessCardList);
-                                    bean_version.setC_oilFuelTypeInt(C_oilFuelTypeInt);
-                                    bean_version.setC_fuelUnitType(C_fuelUnitType);
-                                    bean_version.setC_electricRechargeMileage(C_electricRechargeMileage);
-                                    bean_version.setC_oilWear(C_oilWear);
-                                    bean_version.setC_masterId(C_masterId);
-                                    bean_version.setC_masterName(C_masterName);
-                                    bean_version.setC_logoUrl(C_logoUrl);
-                                    bean_version.setC_logoUrlWp(C_logoUrlWp);
-                                    bean_version.setC_masterAllSpell(C_masterAllSpell);
-                                    bean_version.setC_minDealPrice(C_minDealPrice);
-                                    bean_version.setC_invoiceCount(C_invoiceCount);
-                                    bean_version.setC_brandId(C_brandId);
-                                    bean_version.setC_brandName(C_brandName);
-                                    bean_version.setC_imageUrlWp(C_imageUrlWp);
-                                    bean_version.setC_tranAndGearNum(C_tranAndGearNum);
-                                    bean_version.setC_styleType(C_styleType);
-                                    bean_version.setC_styleType_value(C_styleType_value);
-
-                                    dao_version.MethodInsert(bean_version);
                                 }
                             }
                         }
                     }
                 }
             }
+
         }
     }
 
@@ -1012,9 +1024,9 @@ public class Controller_yiche {
         for (int i = 1; i <= All_GroupNumber; i++) {
             String connect = readUntil.Method_ReadFile(savePath + i + fileName);
             System.out.println(i + fileName);
-            Method_Analysis_baseConfig(connect, i + fileName);
-//            Method_9_Analysis_Config_GetCoumns(connect);
-//            Method_Analysis_choseConfig(connect, i + fileName);
+//            Method_Analysis_baseConfig(connect, i + fileName);
+            Method_9_Analysis_Config_GetCoumns(connect);
+            Method_Analysis_choseConfig(connect, i + fileName);
         }
     }
 
@@ -1580,13 +1592,13 @@ public class Controller_yiche {
                                     for (int l = 0; l < subList.size(); l++) {
                                         JSONObject one_date_value = subList.getJSONObject(l);
                                         String one_value = one_date_value.getString("value");
-                                        String price = "为空";
-                                        String desc = "为空";
+                                        String price = "-";
+                                        String desc = "-";
                                         if (one_date_value.containsKey("price")) {
-                                            price = " price:" + (one_date_value.getString("price").equals("") ? "为空" : one_date_value.getString("price"));
+                                            price = (one_date_value.getString("price").equals("") ? "-" : one_date_value.getString("price"));
                                         }
                                         if (one_date_value.containsKey("desc")) {
-                                            desc = " desc:" + one_date_value.getString("desc");
+                                            desc = one_date_value.getString("desc");
                                         }
                                         Bean_config_chose bean_config_chose = new Bean_config_chose();
                                         bean_config_chose.setC_version_id(version_id);
