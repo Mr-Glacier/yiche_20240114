@@ -67,6 +67,7 @@ public class DaoFather {
     public void Method_IUD(String sql) {
         MethodCreateSomeObject();
         try {
+//            System.out.println("执行SQL语句：" + sql);
             statement.executeUpdate(sql.replace("\t","").replace("\n","").replace("\r",""));
             statement.close();
             connection.close();
@@ -124,7 +125,7 @@ public class DaoFather {
                     String value = method.invoke(obj) == null ? "-" : method.invoke(obj).toString().replace("\t", "").replace("\n", "").replace("\r", "");
                     //如果为空则替换为-
                     if (method.getReturnType() == String.class) {
-                        valueList += "'" + value + "',";
+                        valueList += "N'" + value + "',";
                     } else {
                         valueList += value + ",";
                     }
@@ -174,6 +175,10 @@ public class DaoFather {
     }
 
 
+    public void Method_OnlyChangeState(int C_ID){
+        String sql = "update "+this.TableName+" set C_DownState = '是'  where C_ID = "+C_ID;
+        Method_IUD(sql);
+    }
     public void Method_ChangeState(int C_ID){
         String sql = "update "+this.TableName+" set C_DownState = '是'  where C_ID = "+C_ID;
         Method_IUD(sql);

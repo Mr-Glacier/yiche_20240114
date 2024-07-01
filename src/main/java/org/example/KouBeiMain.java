@@ -14,10 +14,24 @@ public class KouBeiMain {
 //        controller.Method_1_DownFirstHtml(firstPath,fistName);
 //        controller.Method_2_AnalysisHtml1(firstPath,fistName);
 
-        String secondPath = mainPath+"secondHtml\\";
-        HelpCreateFile.Method_Creat_folder(secondPath);
-//        controller.Method_3_DownPagesHtml(secondPath,fistName);
-        controller.Method_4_AnalysisPagesHtml(secondPath,fistName);
+//        String secondPath = mainPath+"secondHtml\\";
+//        HelpCreateFile.Method_Creat_folder(secondPath);
+////        controller.Method_3_DownPagesHtml(secondPath,fistName);
+////        controller.Method_4_AnalysisPagesHtml(secondPath,fistName);
+//
+//        String thirdPath = mainPath+"thirdHtml\\";
+//        HelpCreateFile.Method_Creat_folder(thirdPath);
+//        controller.Method_5_DownDetailHtml(thirdPath,fistName);
+
+
+        String JSONSavePath = mainPath+"DiapingJSON\\";
+
+
+//        controller.Method_6_DownDianpingJSON(JSONSavePath,fistName);
+
+        controller.Method_7_AnalysisDianpingJSON(JSONSavePath,fistName);
+
+
 
     }
 }

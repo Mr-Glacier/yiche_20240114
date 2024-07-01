@@ -9,7 +9,7 @@ public class Main {
         Controller_yiche CY = new Controller_yiche();
 
         String mainPath = "E:\\ZKZD2024\\易车网\\";
-        String datePath = mainPath + "20240311\\";
+        String datePath = mainPath + "20240621\\";
         HelpCreateFile.Method_Creat_folder(datePath);
 
         
@@ -32,7 +32,9 @@ public class Main {
         String modelfileName = "_models.txt";
 
 //        3.下载厂商,车型页面
-//        CY.Method_3_Down_FactoryANDModel(model_savePath,model_API,modelfileName);
+//        for (int i = 0; i < 15; i++) {
+//            CY.Method_3_Down_FactoryANDModel(model_savePath,model_API,modelfileName);
+//        }
 
 //        4.解析厂商页面,车型页面
 //        CY.Method_4_Analysis_models(model_savePath, modelfileName);
@@ -43,12 +45,12 @@ public class Main {
         String version_fileName = "_version.txt";
 
 //        5.下载版本数据  1.5 H
-//        for (int i = 0; i < 5; i++) {
+//        for (int i = 0; i < 20; i++) {
 //            CY.Method_5_Down_version(version_savePath, versionListAPI, version_fileName);
 //        }
 
 //        6.解析版本数据
-        CY.Method_6_Analysis_version(version_savePath, version_fileName);
+//        CY.Method_6_Analysis_version(version_savePath, version_fileName);
 
 
         String Config_savePath =datePath+"Config\\";
@@ -56,13 +58,13 @@ public class Main {
         String Config_fileName = "_Config.txt";
         String ConfigAPI= "https://mhapi.yiche.com/hcar/h_car/api/v1/param/get_param_details?";
 
-//        7.下载版本配置数据
-//        CY.Method_7_Down_versionConfig(Config_savePath,ConfigAPI,Config_fileName);
+////        7.下载版本配置数据
+//        CY.Method_MakeGroup(); // 先进行分组
+//        for (int i = 0; i < 15; i++) {
+//            CY.Method_7_Down_versionConfig(Config_savePath,ConfigAPI,Config_fileName);
+//        }
 
 //        8.解析版本配置数据
-//        CY.Method_8_Analysis_Config(Config_savePath, Config_fileName);
-
-
-
+        CY.Method_8_Analysis_Config(Config_savePath, Config_fileName);
     }
 }
